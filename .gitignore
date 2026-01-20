@@ -1,6 +1,6 @@
 # 数据集
 Dataset/
-# work_dirs/
+work_dirs/**/*.png
 # 掩码和临时文件
 Masking/LEVIR/
 Masking/SYSU/
