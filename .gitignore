@@ -1,0 +1,19 @@
+# 数据集
+Dataset/
+# work_dirs/
+# 掩码和临时文件
+Masking/LEVIR/
+Masking/SYSU/
+Masking/mask_verify_output/
+# 权重文件
+*.pth
+*.pt
+# Python缓存
+__pycache__/
+*.pyc
+# 日志和中间结果
+# *.log
+*.json
+*.sh~
+# 其他
+fix_crlf.py
