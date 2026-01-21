@@ -1,129 +1,121 @@
-# Multimodal Difference Augmentation Learning for Remote Sensing Change Detection
+## 使用指南
 
-Hao Yang, Zhiyu Jiang, Dandan Ma and Qi Wang from Northwestern Polytechnical University
+### 数据准备
 
-[IEEE Xplore Paper link](https://ieeexplore.ieee.org/document/11236418)
+本工作使用两个遥感变化检测（RSCD）数据集：LEVIR Lab 的 [LEVIR-CD](https://justchenhao.github.io/LEVIR/) 与 Q. Shi 等人的 [SYSU-CD](https://github.com/liumency/SYSU-CD)。
 
-## Implement Guide
+1. 下载两个数据集，并按如下结构重新组织：
 
-### Data Preparation
+  ```
+  Dataset/LEVIRCD/train/time1/
+  Dataset/LEVIRCD/train/time2/
+  Dataset/LEVIRCD/train/label/
+  Dataset/LEVIRCD/val/...
+  Dataset/LEVIRCD/test/...
+  Dataset/SYSUCD/...
+  ```
 
-This work uses two RSCD datasets: the LEVIR Lab's [LEVIR-CD](https://justchenhao.github.io/LEVIR/) and Q. Shi _et al._'s [SYSU-CD](https://github.com/liumency/SYSU-CD).
+2. 运行 [`tools/write_path.py`](./tools/write_path.py) 生成三个文本文件：`Dataset/LEVIRCD/train.txt`、`Dataset/LEVIRCD/val.txt` 和 `Dataset/LEVIRCD/test.txt`。然后修改该脚本，为 SYSU-CD 数据集同样生成对应的三个文件。
 
-1. Download both datasets and reorganize them into this structure:
+3. 从 [Hugging Face](https://huggingface.co/YarnYang/MdaCD) 下载 MdaCD 官方提供的两个数据集的 CLIP 文件（也可以后续自己生成 CLIP 文件），并按如下结构导入与整理：
 
-```
-Dataset/LEVIRCD/train/time1/
-Dataset/LEVIRCD/train/time2/
-Dataset/LEVIRCD/train/label/
-Dataset/LEVIRCD/val/...
-Dataset/LEVIRCD/test/...
-Dataset/SYSUCD/...
-```
+  ```
+  Dataset/clip_files/LEVIRCD/train/*.json
+  Dataset/clip_files/LEVIRCD/val/*.json
+  Dataset/clip_files/LEVIRCD/test/*.json
+  Dataset/clip_files/SYSUCD/...
+  ```
 
-2. Run [`tools/write_path.py`](./tools/write_path.py) to generate three text files: `Dataset/LEVIRCD/train.txt`, `Dataset/LEVIRCD/val.txt`, and `Dataset/LEVIRCD/test.txt`. And modify the script to generate another three for the SYSU-CD dataset.
+你也可以使用自定义数据集，只需按照上述步骤组织即可。若有不清楚的细节，可参考 [ChangeCLIP](https://github.com/dyzy41/ChangeCLIP) 的数据准备指南。
 
-3. Download MdaCD official CLIP files for both datasets from [Hugging Face](https://huggingface.co/YarnYang/MdaCD), or generate your own CLIP files later, then import them and reorganize them into this structure:
+### 环境配置
 
-```
-Dataset/clip_files/LEVIRCD/train/*.json
-Dataset/clip_files/LEVIRCD/val/*.json
-Dataset/clip_files/LEVIRCD/test/*.json
-Dataset/clip_files/SYSUCD/...
-```
+本工作使用与 [ChangeCLIP](https://github.com/dyzy41/ChangeCLIP) 相同的环境配置。若有不清楚的细节，可参考其环境配置指南。
 
-You can also use custom datasets. Just follow the steps above. For unclear details, you can refer to [ChangeCLIP](https://github.com/dyzy41/ChangeCLIP)'s data preparation guide.
+1. 环境要求
 
-### Environment Setup
+  ```
+  Ubuntu 20.04 (Focal)
+  CUDA 12.8
+  一块至少 16GB 显存的 NVIDIA GPU
+  ```
 
-This work uses the same environment setup as [ChangeCLIP](https://github.com/dyzy41/ChangeCLIP). Again, for unclear details, you can refer to its environment setup guide.
+2. 创建 Python 3.8 环境，并安装必要依赖：
 
-1. Requirement
+  ```
+  torch==2.0.0
+  torchvision==0.15.1
+  numpy==1.24.3
+  ```
 
-```
-Ubuntu 20.04 (Focal)
-CUDA 12.8
-An NVIDIA GPU with at least 16GB RAM
-```
+  其余依赖可以在训练过程中再安装。
 
-2. Create an environment with Python 3.8, then install these necessary packages:
+3. 安装 CLIP（用于生成 CLIP 文件）。执行：
 
-```
-torch==2.0.0
-torchvision==0.15.1
-numpy==1.24.3
-```
+  ```
+  pip install ftfy regex tqdm
+  pip install git+https://github.com/openai/CLIP.git
+  ```
 
-The rest can be installed during the training process.
+  注意：使用其他方式安装 CLIP 也可以。
 
-3. Install CLIP to generate CLIP files. Run:
+### 训练与测试命令
 
-```
-pip install ftfy regex tqdm
-pip install git+https://github.com/openai/CLIP.git
-```
+1. （可选）生成 CLIP 文件。执行：
 
-Please note that other commands that install CLIP are also OK.
+  ```
+  cd Masking
+  python masking_LEVIRCD.py
+  python masking_SYSUCD.py
+  ```
 
-### Training & Testing Commands
+  上述脚本会生成带 mask 的图像。注意：该脚本可能会在 `./Masking` 目录下写入临时文件。
 
-1. (Optional) Generate CLIP files. Run:
+  然后使用生成的 masked 图像来生成 CLIP 文件：
 
-```
-cd Masking
-python masking_LEVIRCD.py
-python masking_SYSUCD.py
-```
+  ```
+  cd tools
+  bash clip.sh
 
-These scripts generate masked images. Note that this script may write temporary files in `./Masking` folder.
-
-Then use the generated masked images to generate CLIP files:
-
-```
 cd tools
-bash clip.sh
+python general/clip_inference.py \
+  --src_path "../Dataset/LEVIRCD" \
+  --split train val test \
+  --img_split penalty_10_mask1 penalty_10_mask2 \
+  --class_names_path "../Masking/rscls.txt" \
+  --model_name "ViT-B/16" \
+  --tag "56_vit16"
+
+ 使用起始提供的需要这个，否则注释
+  python copy_clip_files.py LEVIRCD penalty_10_mask
+  python copy_clip_files.py SYSUCD penalty_100_mask
+生成完mask的json之后，修改tools下面的copy_files
+  source_file = f"/home/dell/gitrepos/MdaCD/Dataset/{dataset}/{folder}/{mask}{i}_clipcls_56_vit16.json"
+  ```
+
+2. 训练 MdaCD：
+
+  ```
+  bash tr.sh
+  ```
+
+3. 测试 MdaCD：
+
+  ```
+  bash te.sh
+  ```
+
+## 许可证（License）
+
+本仓库基于 [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) 构建，其遵循 [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0)。
+
+## 致谢（Acknowledgement）
+
+本工作基于 OpenMMLab 的 [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) 与 S. Dong 等人的 [ChangeCLIP](https://github.com/dyzy41/ChangeCLIP)。感谢他们的优秀工作！
+
+## 修改的部分
+
 ```
-
-2. To train MdaCD, run:
-
-```
-bash tr.sh
-```
-
-3. To test MdaCD, run:
-
-```
-bash te.sh
-```
-
-## License
-
-This repository is based on [MMSegmentation](https://github.com/open-mmlab/mmsegmentation), 
-which is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
-
-All **original modifications, additions, and new code** contributed by Hao Yang 
-are licensed under the **Hippocratic License 3.0 – NonCommercial (Customized)**.
-
-### Summary of License Terms
-- The original MMSegmentation components remain under **Apache License 2.0**.
-- The new contributions by Hao Yang are under a **NonCommercial, No-Surveillance, No-Military** license.
-- Any redistribution or derivative work must retain both licenses and comply with their respective terms.
-
-Full text of the custom license is available in the file [`LICENSE.custom`](./LICENSE.custom).
-
-## Acknowledgement
-
-This work is built on OpenMMLab's [MMSegmentation](https://github.com/open-mmlab/mmsegmentation) and S. Dong _et al._'s [ChangeCLIP](https://github.com/dyzy41/ChangeCLIP). Thanks for their great work!
-
-## Citation
-
-```
-@article{Yang2025,
-author = {Hao Yang and Zhiyu Jiang and Dandan Ma and Qi Wang},
-year = {2025},
-volume = {63},
-pages = {1-11},
-title = {Multimodal Difference Augmentation Learning for Remote Sensing Change Detection},
-journal = {IEEE Transactions on Geoscience and Remote Sensing}
-}
+Loops当中的FP和FN指标进行交换了两次
+loss当中的mask进行修改
 ```

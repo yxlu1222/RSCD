@@ -1,0 +1,2 @@
+OverallAccuracy,MeanF1,MeanIoU,ClassIoU,ClassF1,ClassRecall,ClassPrecision
+92.06,88.74,80.31,70.42,82.64,80.18,85.26

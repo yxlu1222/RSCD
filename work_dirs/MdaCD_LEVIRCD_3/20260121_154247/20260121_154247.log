@@ -1,0 +1,2806 @@
+2026/01/21 15:42:47 - mmengine - INFO - 
+------------------------------------------------------------
+System environment:
+    sys.platform: linux
+    Python: 3.11.14 (main, Oct 21 2025, 18:31:21) [GCC 11.2.0]
+    CUDA available: True
+    MUSA available: False
+    numpy_random_seed: 1762022955
+    GPU 0,1,2,3,4,5,6,7: NVIDIA GeForce RTX 5090
+    CUDA_HOME: /usr/local/cuda-13.1
+    NVCC: Cuda compilation tools, release 13.1, V13.1.115
+    GCC: gcc (Ubuntu 12.3.0-1ubuntu1~22.04.2) 12.3.0
+    PyTorch: 2.7.1+cu128
+    PyTorch compiling details: PyTorch built with:
+  - GCC 11.2
+  - C++ Version: 201703
+  - Intel(R) oneAPI Math Kernel Library Version 2024.2-Product Build 20240605 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v3.7.1 (Git Hash 8d263e693366ef8db40acc569cc7d8edf644556d)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - LAPACK is enabled (usually provided by MKL)
+  - NNPACK is enabled
+  - CPU capability usage: AVX512
+  - CUDA Runtime 12.8
+  - NVCC architecture flags: -gencode;arch=compute_75,code=sm_75;-gencode;arch=compute_80,code=sm_80;-gencode;arch=compute_86,code=sm_86;-gencode;arch=compute_90,code=sm_90;-gencode;arch=compute_100,code=sm_100;-gencode;arch=compute_120,code=sm_120;-gencode;arch=compute_120,code=compute_120
+  - CuDNN 90.7.1
+  - Magma 2.6.1
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, COMMIT_SHA=e2d141dbde55c2a4370fac5165b0561b6af4798b, CUDA_VERSION=12.8, CUDNN_VERSION=9.7.1, CXX_COMPILER=/opt/rh/gcc-toolset-11/root/usr/bin/c++, CXX_FLAGS= -D_GLIBCXX_USE_CXX11_ABI=1 -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOROCTRACER -DLIBKINETO_NOXPUPTI=ON -DUSE_FBGEMM -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=range-loop-construct -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-unknown-pragmas -Wno-unused-parameter -Wno-strict-overflow -Wno-strict-aliasing -Wno-stringop-overflow -Wsuggest-override -Wno-psabi -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, TORCH_VERSION=2.7.1, USE_CUDA=ON, USE_CUDNN=ON, USE_CUSPARSELT=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_GLOO=ON, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=1, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, USE_ROCM_KERNEL_ASSERT=OFF, 
+
+    TorchVision: 0.22.1+cu128
+    OpenCV: 4.11.0
+    MMEngine: 0.10.7
+
+Runtime environment:
+    cudnn_benchmark: True
+    mp_cfg: {'mp_start_method': 'fork', 'opencv_num_threads': 0}
+    dist_cfg: {'backend': 'nccl'}
+    seed: 1762022955
+    Distributed launcher: pytorch
+    Distributed training: True
+    GPU number: 1
+------------------------------------------------------------
+
+2026/01/21 15:42:47 - mmengine - INFO - Config:
+crop_size = (
+    256,
+    256,
+)
+data_preprocessor = dict(
+    mean=[
+        123.675,
+        116.28,
+        103.53,
+        123.675,
+        116.28,
+        103.53,
+    ],
+    size=(
+        256,
+        256,
+    ),
+    std=[
+        58.395,
+        57.12,
+        57.375,
+        58.395,
+        57.12,
+        57.375,
+    ],
+    type='SegDataPreProcessor')
+data_root = '/home/dell/gitrepos/MdaCD/Dataset/LEVIRCD'
+dataset_type = 'TXTCDDatasetJSON'
+default_hooks = dict(
+    checkpoint=dict(
+        by_epoch=False,
+        interval=10000,
+        save_best='mIoU',
+        type='CheckpointHook'),
+    logger=dict(interval=10, log_metric_by_epoch=False, type='LoggerHook'),
+    param_scheduler=dict(type='ParamSchedulerHook'),
+    sampler_seed=dict(type='DistSamplerSeedHook'),
+    timer=dict(type='IterTimerHook'),
+    visualization=dict(type='SegVisualizationHook'))
+default_scope = 'mmseg'
+env_cfg = dict(
+    cudnn_benchmark=True,
+    dist_cfg=dict(backend='nccl'),
+    mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
+find_unused_parameters = True
+launcher = 'pytorch'
+load_from = None
+log_level = 'INFO'
+log_processor = dict(by_epoch=False)
+metainfo = dict(
+    classes=(
+        'background',
+        'building',
+    ),
+    palette=[
+        [
+            0,
+            0,
+            0,
+        ],
+        [
+            255,
+            255,
+            255,
+        ],
+    ])
+model = dict(
+    backbone=dict(
+        input_resolution=512,
+        layers=[
+            3,
+            4,
+            6,
+            3,
+        ],
+        output_dim=1024,
+        style='pytorch',
+        type='CLIPResNetWithAttention'),
+    context_decoder=dict(
+        context_length=16,
+        dropout=0.1,
+        outdim=1024,
+        style='pytorch',
+        transformer_heads=4,
+        transformer_layers=3,
+        transformer_width=256,
+        type='ContextDecoder',
+        visual_dim=1024),
+    context_length=64,
+    decode_head=dict(
+        align_corners=False,
+        channels=256,
+        dropout_ratio=0.1,
+        feature_strides=[
+            4,
+            8,
+            16,
+            32,
+        ],
+        in_channels=[
+            256,
+            256,
+            256,
+            256,
+        ],
+        in_index=[
+            0,
+            1,
+            2,
+            3,
+        ],
+        loss_decode=dict(
+            loss_weight=1.0, type='CrossEntropyLoss', use_sigmoid=False),
+        norm_cfg=dict(requires_grad=True, type='SyncBN'),
+        num_classes=2,
+        type='SwinTextDecode'),
+    neck=dict(
+        in_channels=[
+            512,
+            1024,
+            2048,
+            4100,
+        ],
+        num_outs=4,
+        out_channels=256,
+        type='FPN'),
+    pretrained='/home/dell/gitrepos/MdaCD/RN50.pt',
+    test_cfg=dict(mode='whole'),
+    text_encoder=dict(
+        context_length=77,
+        embed_dim=1024,
+        style='pytorch',
+        transformer_heads=8,
+        transformer_layers=12,
+        transformer_width=512,
+        type='CLIPTextContextEncoder'),
+    text_head=False,
+    train_cfg=dict(),
+    type='AugCD')
+norm_cfg = dict(requires_grad=True, type='SyncBN')
+optim_wrapper = dict(
+    optimizer=dict(
+        betas=(
+            0.9,
+            0.999,
+        ), lr=0.0001, type='AdamW', weight_decay=0.01),
+    paramwise_cfg=dict(
+        custom_keys=dict(
+            absolute_pos_embed=dict(decay_mult=0.0),
+            norm=dict(decay_mult=0.0),
+            relative_position_bias_table=dict(decay_mult=0.0))),
+    type='OptimWrapper')
+optimizer = dict(lr=0.01, momentum=0.9, type='SGD', weight_decay=0.0005)
+param_scheduler = [
+    dict(
+        begin=0, by_epoch=False, end=1500, start_factor=1e-06,
+        type='LinearLR'),
+    dict(
+        begin=1500,
+        by_epoch=False,
+        end=30000,
+        eta_min=0.0,
+        power=1.0,
+        type='PolyLR'),
+]
+resume = False
+test_cfg = dict(type='TestLoop')
+test_dataloader = dict(
+    batch_size=1,
+    dataset=dict(
+        ann_file='test.txt',
+        data_prefix=dict(
+            img_path='test/A', img_path2='test/B', seg_map_path='test/label'),
+        data_root='/home/dell/gitrepos/MdaCD/Dataset/LEVIRCD',
+        metainfo=dict(
+            classes=(
+                'background',
+                'building',
+            ),
+            palette=[
+                [
+                    0,
+                    0,
+                    0,
+                ],
+                [
+                    255,
+                    255,
+                    255,
+                ],
+            ]),
+        pipeline=[
+            dict(type='LoadMultipleRSImageFromFile'),
+            dict(type='LoadAnnotations'),
+            dict(type='ConcatCDInput'),
+            dict(type='PackCDInputs'),
+        ],
+        type='TXTCDDatasetJSON'),
+    num_workers=4,
+    persistent_workers=True,
+    sampler=dict(shuffle=False, type='DefaultSampler'))
+test_evaluator = dict(
+    iou_metrics=[
+        'mIoU',
+    ], type='IoUMetric')
+test_pipeline = [
+    dict(type='LoadMultipleRSImageFromFile'),
+    dict(type='LoadAnnotations'),
+    dict(type='ConcatCDInput'),
+    dict(type='PackCDInputs'),
+]
+train_cfg = dict(max_iters=30000, type='IterBasedTrainLoop', val_interval=1000)
+train_dataloader = dict(
+    batch_size=20,
+    dataset=dict(
+        ann_file='train.txt',
+        data_prefix=dict(
+            img_path='train/A',
+            img_path2='train/B',
+            seg_map_path='train/label'),
+        data_root='/home/dell/gitrepos/MdaCD/Dataset/LEVIRCD',
+        metainfo=dict(
+            classes=(
+                'background',
+                'building',
+            ),
+            palette=[
+                [
+                    0,
+                    0,
+                    0,
+                ],
+                [
+                    255,
+                    255,
+                    255,
+                ],
+            ]),
+        pipeline=[
+            dict(type='LoadMultipleRSImageFromFile'),
+            dict(type='LoadAnnotations'),
+            dict(degree=180, prob=0.5, type='MultiImgRandomRotate'),
+            dict(
+                cat_max_ratio=0.75,
+                crop_size=(
+                    256,
+                    256,
+                ),
+                type='MultiImgRandomCrop'),
+            dict(direction='horizontal', prob=0.5, type='MultiImgRandomFlip'),
+            dict(direction='vertical', prob=0.5, type='MultiImgRandomFlip'),
+            dict(
+                brightness_delta=10,
+                contrast_range=(
+                    0.8,
+                    1.2,
+                ),
+                hue_delta=10,
+                saturation_range=(
+                    0.8,
+                    1.2,
+                ),
+                type='MultiImgPhotoMetricDistortion'),
+            dict(type='ConcatCDInput'),
+            dict(type='PackCDInputs'),
+        ],
+        type='TXTCDDatasetJSON'),
+    num_workers=8,
+    persistent_workers=True,
+    sampler=dict(shuffle=True, type='InfiniteSampler'))
+train_pipeline = [
+    dict(type='LoadMultipleRSImageFromFile'),
+    dict(type='LoadAnnotations'),
+    dict(degree=180, prob=0.5, type='MultiImgRandomRotate'),
+    dict(
+        cat_max_ratio=0.75, crop_size=(
+            256,
+            256,
+        ), type='MultiImgRandomCrop'),
+    dict(direction='horizontal', prob=0.5, type='MultiImgRandomFlip'),
+    dict(direction='vertical', prob=0.5, type='MultiImgRandomFlip'),
+    dict(
+        brightness_delta=10,
+        contrast_range=(
+            0.8,
+            1.2,
+        ),
+        hue_delta=10,
+        saturation_range=(
+            0.8,
+            1.2,
+        ),
+        type='MultiImgPhotoMetricDistortion'),
+    dict(type='ConcatCDInput'),
+    dict(type='PackCDInputs'),
+]
+tta_model = dict(type='SegTTAModel')
+tta_pipeline = [
+    dict(type='LoadMultipleRSImageFromFile'),
+    dict(
+        transforms=[
+            [
+                dict(type='LoadAnnotations'),
+            ],
+            [
+                dict(type='ConcatCDInput'),
+            ],
+            [
+                dict(type='PackCDInputs'),
+            ],
+        ],
+        type='TestTimeAug'),
+]
+val_cfg = dict(type='ValLoop')
+val_dataloader = dict(
+    batch_size=1,
+    dataset=dict(
+        ann_file='val.txt',
+        data_prefix=dict(
+            img_path='test/A', img_path2='test/B', seg_map_path='test/label'),
+        data_root='/home/dell/gitrepos/MdaCD/Dataset/LEVIRCD',
+        metainfo=dict(
+            classes=(
+                'background',
+                'building',
+            ),
+            palette=[
+                [
+                    0,
+                    0,
+                    0,
+                ],
+                [
+                    255,
+                    255,
+                    255,
+                ],
+            ]),
+        pipeline=[
+            dict(type='LoadMultipleRSImageFromFile'),
+            dict(type='LoadAnnotations'),
+            dict(type='ConcatCDInput'),
+            dict(type='PackCDInputs'),
+        ],
+        type='TXTCDDatasetJSON'),
+    num_workers=4,
+    persistent_workers=True,
+    sampler=dict(shuffle=False, type='DefaultSampler'))
+val_evaluator = dict(
+    iou_metrics=[
+        'mIoU',
+    ], type='IoUMetric')
+vis_backends = [
+    dict(type='LocalVisBackend'),
+]
+visualizer = dict(
+    name='visualizer',
+    type='SegLocalVisualizer',
+    vis_backends=[
+        dict(type='LocalVisBackend'),
+    ])
+work_dir = '/home/dell/gitrepos/MdaCD/work_dirs/MdaCD_LEVIRCD_3'
+
+2026/01/21 15:42:52 - mmengine - INFO - Hooks will be executed in the following order:
+before_run:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+before_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_train_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) DistSamplerSeedHook                
+ -------------------- 
+before_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_train_iter:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) SegVisualizationHook               
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_train_epoch:
+(NORMAL      ) IterTimerHook                      
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_val_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_val_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_val_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) SegVisualizationHook               
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_val_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+(LOW         ) ParamSchedulerHook                 
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+after_val:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_train:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(VERY_LOW    ) CheckpointHook                     
+ -------------------- 
+before_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+before_test_epoch:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+before_test_iter:
+(NORMAL      ) IterTimerHook                      
+ -------------------- 
+after_test_iter:
+(NORMAL      ) IterTimerHook                      
+(NORMAL      ) SegVisualizationHook               
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test_epoch:
+(VERY_HIGH   ) RuntimeInfoHook                    
+(NORMAL      ) IterTimerHook                      
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+after_test:
+(VERY_HIGH   ) RuntimeInfoHook                    
+ -------------------- 
+after_run:
+(BELOW_NORMAL) LoggerHook                         
+ -------------------- 
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm3.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm3.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm3.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm3.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm3.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.0.norm3.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm3.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm3.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm3.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm3.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm3.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.1.norm3.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm3.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm3.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm3.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm3.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm3.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- context_decoder.decoder.2.norm3.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.attn.relative_position_bias_table:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.attn.relative_position_bias_table:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.attn.relative_position_bias_table:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.0.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.attn.relative_position_bias_table:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.attn.relative_position_bias_table:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.attn.relative_position_bias_table:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer1.up.layer.blocks.1.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.attn.relative_position_bias_table:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.attn.relative_position_bias_table:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.attn.relative_position_bias_table:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.0.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.attn.relative_position_bias_table:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.attn.relative_position_bias_table:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.attn.relative_position_bias_table:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer2.up.layer.blocks.1.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.attn.relative_position_bias_table:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.attn.relative_position_bias_table:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.attn.relative_position_bias_table:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.0.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm1.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm1.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm1.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm1.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm1.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm1.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.attn.relative_position_bias_table:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.attn.relative_position_bias_table:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.attn.relative_position_bias_table:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm2.weight:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm2.weight:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm2.weight:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm2.bias:lr=0.0001
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm2.bias:weight_decay=0.0
+2026/01/21 15:42:53 - mmengine - INFO - paramwise_options -- decode_head.layer3.up.layer.blocks.1.norm2.bias:decay_mult=0.0
+2026/01/21 15:42:53 - mmengine - WARNING - The prefix is not set in metric class IoUMetric.
+Name of parameter - Initialization information
+
+contexts2 - torch.Size([1, 1, 13, 512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+gamma - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+backbone.conv1.weight - torch.Size([32, 3, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.bn1.weight - torch.Size([32]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.bn1.bias - torch.Size([32]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.conv2.weight - torch.Size([32, 32, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.bn2.weight - torch.Size([32]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.bn2.bias - torch.Size([32]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.conv3.weight - torch.Size([64, 32, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.bn3.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.bn3.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.conv1.weight - torch.Size([64, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.downsample.0.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.downsample.1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.0.downsample.1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.conv1.weight - torch.Size([64, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.1.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.conv1.weight - torch.Size([64, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.bn1.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.bn1.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.conv2.weight - torch.Size([64, 64, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.bn2.weight - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.bn2.bias - torch.Size([64]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.conv3.weight - torch.Size([256, 64, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.bn3.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer1.2.bn3.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.conv1.weight - torch.Size([128, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.downsample.0.weight - torch.Size([512, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.downsample.1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.0.downsample.1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.1.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.2.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.conv1.weight - torch.Size([128, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.bn1.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.bn1.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.conv2.weight - torch.Size([128, 128, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.bn2.weight - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.bn2.bias - torch.Size([128]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.conv3.weight - torch.Size([512, 128, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.bn3.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer2.3.bn3.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.conv1.weight - torch.Size([256, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.downsample.0.weight - torch.Size([1024, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.downsample.1.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.0.downsample.1.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.1.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.2.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.3.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.4.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.conv1.weight - torch.Size([256, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.bn1.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.bn1.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.conv2.weight - torch.Size([256, 256, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.bn2.weight - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.bn2.bias - torch.Size([256]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.conv3.weight - torch.Size([1024, 256, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.bn3.weight - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer3.5.bn3.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.conv1.weight - torch.Size([512, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.downsample.0.weight - torch.Size([2048, 1024, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.downsample.1.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.0.downsample.1.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.1.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.conv1.weight - torch.Size([512, 2048, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.bn1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.bn1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.conv2.weight - torch.Size([512, 512, 3, 3]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.bn2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.bn2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.conv3.weight - torch.Size([2048, 512, 1, 1]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.bn3.weight - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.layer4.2.bn3.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.positional_embedding - torch.Size([257, 2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.k_proj.weight - torch.Size([2048, 2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.k_proj.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.q_proj.weight - torch.Size([2048, 2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.q_proj.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.v_proj.weight - torch.Size([2048, 2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.v_proj.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.c_proj.weight - torch.Size([1024, 2048]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+backbone.attnpool.c_proj.bias - torch.Size([1024]): 
+Initialized by user-defined `init_weights` in CLIPResNetWithAttention  
+
+text_encoder.positional_embedding - torch.Size([77, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.text_projection - torch.Size([512, 1024]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.0.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.1.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.2.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.3.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.4.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.5.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.6.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.7.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.8.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.9.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.10.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.attn.in_proj_weight - torch.Size([1536, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.attn.in_proj_bias - torch.Size([1536]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.attn.out_proj.weight - torch.Size([512, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.attn.out_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.ln_1.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.ln_1.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.mlp.c_fc.weight - torch.Size([2048, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.mlp.c_fc.bias - torch.Size([2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.mlp.c_proj.weight - torch.Size([512, 2048]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.mlp.c_proj.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.ln_2.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.transformer.resblocks.11.ln_2.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.token_embedding.weight - torch.Size([49408, 512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.ln_final.weight - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+text_encoder.ln_final.bias - torch.Size([512]): 
+Initialized by user-defined `init_weights` in CLIPTextContextEncoder  
+
+context_decoder.memory_proj.0.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.memory_proj.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.memory_proj.1.weight - torch.Size([256, 1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.memory_proj.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.memory_proj.2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.memory_proj.2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.text_proj.0.weight - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.text_proj.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.text_proj.1.weight - torch.Size([256, 1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.text_proj.1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.self_attn.q_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.self_attn.k_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.self_attn.v_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.self_attn.proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.self_attn.proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.cross_attn.q_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.cross_attn.k_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.cross_attn.v_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.cross_attn.proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.cross_attn.proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.norm1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.norm1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.norm2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.norm2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.norm3.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.norm3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.mlp.0.weight - torch.Size([1024, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.mlp.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.mlp.3.weight - torch.Size([256, 1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.0.mlp.3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.self_attn.q_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.self_attn.k_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.self_attn.v_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.self_attn.proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.self_attn.proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.cross_attn.q_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.cross_attn.k_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.cross_attn.v_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.cross_attn.proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.cross_attn.proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.norm1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.norm1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.norm2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.norm2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.norm3.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.norm3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.mlp.0.weight - torch.Size([1024, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.mlp.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.mlp.3.weight - torch.Size([256, 1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.1.mlp.3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.self_attn.q_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.self_attn.k_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.self_attn.v_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.self_attn.proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.self_attn.proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.cross_attn.q_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.cross_attn.k_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.cross_attn.v_proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.cross_attn.proj.weight - torch.Size([256, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.cross_attn.proj.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.norm1.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.norm1.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.norm2.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.norm2.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.norm3.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.norm3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.mlp.0.weight - torch.Size([1024, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.mlp.0.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.mlp.3.weight - torch.Size([256, 1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.decoder.2.mlp.3.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.out_proj.0.weight - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.out_proj.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.out_proj.1.weight - torch.Size([1024, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+context_decoder.out_proj.1.bias - torch.Size([1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+neck.lateral_convs.0.conv.weight - torch.Size([256, 512, 1, 1]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.lateral_convs.0.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+neck.lateral_convs.1.conv.weight - torch.Size([256, 1024, 1, 1]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.lateral_convs.1.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+neck.lateral_convs.2.conv.weight - torch.Size([256, 2048, 1, 1]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.lateral_convs.2.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+neck.lateral_convs.3.conv.weight - torch.Size([256, 4100, 1, 1]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.lateral_convs.3.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+neck.fpn_convs.0.conv.weight - torch.Size([256, 256, 3, 3]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.fpn_convs.0.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+neck.fpn_convs.1.conv.weight - torch.Size([256, 256, 3, 3]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.fpn_convs.1.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+neck.fpn_convs.2.conv.weight - torch.Size([256, 256, 3, 3]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.fpn_convs.2.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+neck.fpn_convs.3.conv.weight - torch.Size([256, 256, 3, 3]): 
+XavierInit: gain=1, distribution=uniform, bias=0 
+
+neck.fpn_convs.3.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.conv_seg.weight - torch.Size([2, 256, 1, 1]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+decode_head.conv_seg.bias - torch.Size([2]): 
+NormalInit: mean=0, std=0.01, bias=0 
+
+decode_head.layer1.up.layer.blocks.0.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.attn.relative_position_bias_table - torch.Size([169, 2]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.attn.qkv.weight - torch.Size([384, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.attn.qkv.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.attn.proj.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.attn.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.norm2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.norm2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.mlp.fc1.weight - torch.Size([512, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.mlp.fc1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.mlp.fc2.weight - torch.Size([128, 512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.mlp.fc2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.proj.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.low_rank_bilinear.WQ.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.low_rank_bilinear.WQ.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.low_rank_bilinear.WK.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.low_rank_bilinear.WK.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.low_rank_bilinear.WV.weight - torch.Size([256, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.0.low_rank_bilinear.WV.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.attn.relative_position_bias_table - torch.Size([169, 2]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.attn.qkv.weight - torch.Size([384, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.attn.qkv.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.attn.proj.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.attn.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.norm2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.norm2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.mlp.fc1.weight - torch.Size([512, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.mlp.fc1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.mlp.fc2.weight - torch.Size([128, 512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.mlp.fc2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.proj.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.low_rank_bilinear.WQ.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.low_rank_bilinear.WQ.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.low_rank_bilinear.WK.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.low_rank_bilinear.WK.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.low_rank_bilinear.WV.weight - torch.Size([256, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.layer.blocks.1.low_rank_bilinear.WV.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.up.up.1.weight - torch.Size([128, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.up.up.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.up.up.2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.up.up.2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.conv_relu.0.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.up.conv_relu.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.conv_relu.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.conv_relu.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.conv2.0.weight - torch.Size([128, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer1.conv2.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.attn.relative_position_bias_table - torch.Size([169, 2]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.attn.qkv.weight - torch.Size([384, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.attn.qkv.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.attn.proj.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.attn.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.norm2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.norm2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.mlp.fc1.weight - torch.Size([512, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.mlp.fc1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.mlp.fc2.weight - torch.Size([128, 512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.mlp.fc2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.proj.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.low_rank_bilinear.WQ.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.low_rank_bilinear.WQ.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.low_rank_bilinear.WK.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.low_rank_bilinear.WK.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.low_rank_bilinear.WV.weight - torch.Size([256, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.0.low_rank_bilinear.WV.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.attn.relative_position_bias_table - torch.Size([169, 2]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.attn.qkv.weight - torch.Size([384, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.attn.qkv.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.attn.proj.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.attn.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.norm2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.norm2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.mlp.fc1.weight - torch.Size([512, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.mlp.fc1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.mlp.fc2.weight - torch.Size([128, 512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.mlp.fc2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.proj.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.low_rank_bilinear.WQ.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.low_rank_bilinear.WQ.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.low_rank_bilinear.WK.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.low_rank_bilinear.WK.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.low_rank_bilinear.WV.weight - torch.Size([256, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.layer.blocks.1.low_rank_bilinear.WV.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.up.up.1.weight - torch.Size([128, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.up.up.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.up.up.2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.up.up.2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.conv_relu.0.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.up.conv_relu.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.conv_relu.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.conv_relu.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.conv2.0.weight - torch.Size([128, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer2.conv2.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.attn.relative_position_bias_table - torch.Size([169, 2]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.attn.qkv.weight - torch.Size([384, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.attn.qkv.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.attn.proj.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.attn.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.norm2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.norm2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.mlp.fc1.weight - torch.Size([512, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.mlp.fc1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.mlp.fc2.weight - torch.Size([128, 512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.mlp.fc2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.proj.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.low_rank_bilinear.WQ.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.low_rank_bilinear.WQ.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.low_rank_bilinear.WK.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.low_rank_bilinear.WK.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.low_rank_bilinear.WV.weight - torch.Size([256, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.0.low_rank_bilinear.WV.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.norm1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.norm1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.attn.relative_position_bias_table - torch.Size([169, 2]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.attn.qkv.weight - torch.Size([384, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.attn.qkv.bias - torch.Size([384]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.attn.proj.weight - torch.Size([128, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.attn.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.norm2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.norm2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.mlp.fc1.weight - torch.Size([512, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.mlp.fc1.bias - torch.Size([512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.mlp.fc2.weight - torch.Size([128, 512]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.mlp.fc2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.proj.weight - torch.Size([128, 256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.proj.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.low_rank_bilinear.WQ.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.low_rank_bilinear.WQ.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.low_rank_bilinear.WK.weight - torch.Size([64, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.low_rank_bilinear.WK.bias - torch.Size([64]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.low_rank_bilinear.WV.weight - torch.Size([256, 128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.layer.blocks.1.low_rank_bilinear.WV.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.up.up.1.weight - torch.Size([128, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.up.up.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.up.up.2.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.up.up.2.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.conv_relu.0.weight - torch.Size([128, 128, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.up.conv_relu.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.conv_relu.0.weight - torch.Size([256, 256, 3, 3]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.conv_relu.0.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.conv2.0.weight - torch.Size([128, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.layer3.conv2.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linearA.0.weight - torch.Size([128, 1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linearA.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linearA.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linearA.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linearB.0.weight - torch.Size([128, 1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linearB.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linearB.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linearB.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.minus_conv.conv.weight - torch.Size([2, 2, 3]): 
+Initialized by user-defined `init_weights` in ConvModule  
+
+decode_head.minus_conv.conv.bias - torch.Size([2]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.channel_att.0.conv1.conv.weight - torch.Size([1, 16, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.channel_att.0.conv1.conv.bias - torch.Size([1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.channel_att.0.conv2.conv.weight - torch.Size([16, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.channel_att.0.conv2.conv.bias - torch.Size([16]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.channel_att.1.weight - torch.Size([2, 16, 3]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.channel_att.1.bias - torch.Size([2]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linear.0.weight - torch.Size([128, 1024]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linear.0.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linear.1.weight - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.linear.1.bias - torch.Size([128]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.e4conv.conv1.conv.weight - torch.Size([16, 258, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.e4conv.conv1.conv.bias - torch.Size([16]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.e4conv.conv2.conv.weight - torch.Size([258, 16, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.e4conv.conv2.conv.bias - torch.Size([258]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.e4conv.conv_last.conv.weight - torch.Size([256, 258, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+decode_head.e4conv.conv_last.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+minus_conv.0.conv.weight - torch.Size([256, 256, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+minus_conv.0.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+minus_conv.1.conv.weight - torch.Size([256, 512, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+minus_conv.1.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+minus_conv.2.conv.weight - torch.Size([256, 1024, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+minus_conv.2.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+minus_conv.3.conv.weight - torch.Size([256, 2050, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+minus_conv.3.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.0.conv1.conv.weight - torch.Size([48, 768, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.0.conv1.conv.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.0.conv2.conv.weight - torch.Size([768, 48, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.0.conv2.conv.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.0.conv_last.conv.weight - torch.Size([256, 768, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.0.conv_last.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.1.conv1.conv.weight - torch.Size([48, 768, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.1.conv1.conv.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.1.conv2.conv.weight - torch.Size([768, 48, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.1.conv2.conv.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.1.conv_last.conv.weight - torch.Size([256, 768, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.1.conv_last.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.2.conv1.conv.weight - torch.Size([48, 768, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.2.conv1.conv.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.2.conv2.conv.weight - torch.Size([768, 48, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.2.conv2.conv.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.2.conv_last.conv.weight - torch.Size([256, 768, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.2.conv_last.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.3.conv1.conv.weight - torch.Size([48, 768, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.3.conv1.conv.bias - torch.Size([48]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.3.conv2.conv.weight - torch.Size([768, 48, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.3.conv2.conv.bias - torch.Size([768]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.3.conv_last.conv.weight - torch.Size([256, 768, 1, 1]): 
+The value is the same before and after calling `init_weights` of AugCD  
+
+channel_att.3.conv_last.conv.bias - torch.Size([256]): 
+The value is the same before and after calling `init_weights` of AugCD  
+2026/01/21 15:42:54 - mmengine - WARNING - "FileClient" will be deprecated in future. Please use io functions in https://mmengine.readthedocs.io/en/latest/api/fileio.html#file-io
+2026/01/21 15:42:54 - mmengine - WARNING - "HardDiskBackend" is the alias of "LocalBackend" and the former will be deprecated in future.
+2026/01/21 15:42:54 - mmengine - INFO - Checkpoints will be saved to /home/dell/gitrepos/MdaCD/work_dirs/MdaCD_LEVIRCD_3.
+2026/01/21 15:43:00 - mmengine - INFO - Iter(train) [   10/30000]  base_lr: 6.0050e-07 lr: 6.0050e-07  eta: 4:29:00  time: 0.5382  data_time: 0.0252  memory: 22398  loss: 1.3705  decode.loss_ce: 0.6272  decode.acc_seg: 82.1081  loss_nce: 0.7433
+2026/01/21 15:43:02 - mmengine - INFO - Iter(train) [   20/30000]  base_lr: 1.2676e-06 lr: 1.2676e-06  eta: 3:19:49  time: 0.2616  data_time: 0.0157  memory: 15302  loss: 1.3777  decode.loss_ce: 0.6380  decode.acc_seg: 95.1825  loss_nce: 0.7397
+2026/01/21 15:43:03 - mmengine - INFO - Exp name: MdaCD_LEVIRCD_20260121_154247
+2026/01/21 15:43:05 - mmengine - INFO - Iter(train) [   30/30000]  base_lr: 1.9347e-06 lr: 1.9347e-06  eta: 2:57:32  time: 0.2665  data_time: 0.0183  memory: 15302  loss: 1.3368  decode.loss_ce: 0.5979  decode.acc_seg: 94.3592  loss_nce: 0.7389
+2026/01/21 15:43:08 - mmengine - INFO - Iter(train) [   40/30000]  base_lr: 2.6018e-06 lr: 2.6018e-06  eta: 2:46:16  time: 0.2657  data_time: 0.0191  memory: 15302  loss: 1.3184  decode.loss_ce: 0.5851  decode.acc_seg: 93.1208  loss_nce: 0.7333
+2026/01/21 15:43:10 - mmengine - INFO - Iter(train) [   50/30000]  base_lr: 3.2689e-06 lr: 3.2689e-06  eta: 2:39:40  time: 0.2675  data_time: 0.0216  memory: 15301  loss: 1.2642  decode.loss_ce: 0.5341  decode.acc_seg: 91.2510  loss_nce: 0.7301
+2026/01/21 15:43:13 - mmengine - INFO - Iter(train) [   60/30000]  base_lr: 3.9361e-06 lr: 3.9361e-06  eta: 2:34:55  time: 0.2634  data_time: 0.0173  memory: 15300  loss: 1.1875  decode.loss_ce: 0.4668  decode.acc_seg: 94.5850  loss_nce: 0.7207
+2026/01/21 15:43:16 - mmengine - INFO - Iter(train) [   70/30000]  base_lr: 4.6032e-06 lr: 4.6032e-06  eta: 2:31:35  time: 0.2643  data_time: 0.0180  memory: 15302  loss: 1.1348  decode.loss_ce: 0.4193  decode.acc_seg: 91.8150  loss_nce: 0.7155
+2026/01/21 15:43:18 - mmengine - INFO - Iter(train) [   80/30000]  base_lr: 5.2703e-06 lr: 5.2703e-06  eta: 2:29:08  time: 0.2654  data_time: 0.0189  memory: 15302  loss: 1.0457  decode.loss_ce: 0.3442  decode.acc_seg: 88.9877  loss_nce: 0.7015
+2026/01/21 15:43:21 - mmengine - INFO - Iter(train) [   90/30000]  base_lr: 5.9374e-06 lr: 5.9374e-06  eta: 2:27:23  time: 0.2685  data_time: 0.0207  memory: 15302  loss: 1.0120  decode.loss_ce: 0.3008  decode.acc_seg: 91.8320  loss_nce: 0.7111
+2026/01/21 15:43:24 - mmengine - INFO - Iter(train) [  100/30000]  base_lr: 6.6045e-06 lr: 6.6045e-06  eta: 2:25:48  time: 0.2649  data_time: 0.0173  memory: 15302  loss: 0.9699  decode.loss_ce: 0.2626  decode.acc_seg: 92.6739  loss_nce: 0.7073
+2026/01/21 15:43:26 - mmengine - INFO - Iter(train) [  110/30000]  base_lr: 7.2716e-06 lr: 7.2716e-06  eta: 2:24:30  time: 0.2651  data_time: 0.0188  memory: 15302  loss: 0.9248  decode.loss_ce: 0.2194  decode.acc_seg: 96.4457  loss_nce: 0.7054
+2026/01/21 15:43:29 - mmengine - INFO - Iter(train) [  120/30000]  base_lr: 7.9387e-06 lr: 7.9387e-06  eta: 2:23:28  time: 0.2662  data_time: 0.0196  memory: 15301  loss: 0.8914  decode.loss_ce: 0.1946  decode.acc_seg: 92.7371  loss_nce: 0.6967
+2026/01/21 15:43:31 - mmengine - INFO - Iter(train) [  130/30000]  base_lr: 8.6058e-06 lr: 8.6058e-06  eta: 2:22:32  time: 0.2649  data_time: 0.0188  memory: 15302  loss: 0.9417  decode.loss_ce: 0.2373  decode.acc_seg: 96.1336  loss_nce: 0.7044
+2026/01/21 15:43:34 - mmengine - INFO - Iter(train) [  140/30000]  base_lr: 9.2729e-06 lr: 9.2729e-06  eta: 2:21:47  time: 0.2667  data_time: 0.0198  memory: 15302  loss: 0.9349  decode.loss_ce: 0.2344  decode.acc_seg: 97.2443  loss_nce: 0.7005
+2026/01/21 15:43:37 - mmengine - INFO - Iter(train) [  150/30000]  base_lr: 9.9401e-06 lr: 9.9401e-06  eta: 2:21:05  time: 0.2654  data_time: 0.0190  memory: 15302  loss: 0.9417  decode.loss_ce: 0.2436  decode.acc_seg: 91.1381  loss_nce: 0.6981
+2026/01/21 15:43:39 - mmengine - INFO - Iter(train) [  160/30000]  base_lr: 1.0607e-05 lr: 1.0607e-05  eta: 2:20:28  time: 0.2650  data_time: 0.0186  memory: 15302  loss: 0.9744  decode.loss_ce: 0.2787  decode.acc_seg: 87.8531  loss_nce: 0.6957
+2026/01/21 15:43:42 - mmengine - INFO - Iter(train) [  170/30000]  base_lr: 1.1274e-05 lr: 1.1274e-05  eta: 2:19:54  time: 0.2650  data_time: 0.0188  memory: 15302  loss: 0.9325  decode.loss_ce: 0.2382  decode.acc_seg: 91.1414  loss_nce: 0.6944
+2026/01/21 15:43:45 - mmengine - INFO - Iter(train) [  180/30000]  base_lr: 1.1941e-05 lr: 1.1941e-05  eta: 2:19:26  time: 0.2662  data_time: 0.0196  memory: 15302  loss: 0.8944  decode.loss_ce: 0.1979  decode.acc_seg: 92.8015  loss_nce: 0.6964
+2026/01/21 15:43:47 - mmengine - INFO - Iter(train) [  190/30000]  base_lr: 1.2608e-05 lr: 1.2608e-05  eta: 2:19:00  time: 0.2655  data_time: 0.0188  memory: 15302  loss: 0.8978  decode.loss_ce: 0.2148  decode.acc_seg: 93.9939  loss_nce: 0.6830
+2026/01/21 15:43:50 - mmengine - INFO - Iter(train) [  200/30000]  base_lr: 1.3276e-05 lr: 1.3276e-05  eta: 2:18:35  time: 0.2653  data_time: 0.0186  memory: 15301  loss: 0.8765  decode.loss_ce: 0.1869  decode.acc_seg: 93.8701  loss_nce: 0.6896
+2026/01/21 15:43:53 - mmengine - INFO - Iter(train) [  210/30000]  base_lr: 1.3943e-05 lr: 1.3943e-05  eta: 2:18:15  time: 0.2664  data_time: 0.0196  memory: 15302  loss: 0.8887  decode.loss_ce: 0.1981  decode.acc_seg: 89.2923  loss_nce: 0.6906
+2026/01/21 15:43:55 - mmengine - INFO - Iter(train) [  220/30000]  base_lr: 1.4610e-05 lr: 1.4610e-05  eta: 2:17:55  time: 0.2658  data_time: 0.0191  memory: 15302  loss: 0.8713  decode.loss_ce: 0.1881  decode.acc_seg: 95.0093  loss_nce: 0.6832
+2026/01/21 15:43:58 - mmengine - INFO - Iter(train) [  230/30000]  base_lr: 1.5277e-05 lr: 1.5277e-05  eta: 2:17:38  time: 0.2669  data_time: 0.0201  memory: 15301  loss: 0.8343  decode.loss_ce: 0.1588  decode.acc_seg: 91.6917  loss_nce: 0.6756
+2026/01/21 15:44:01 - mmengine - INFO - Iter(train) [  240/30000]  base_lr: 1.5944e-05 lr: 1.5944e-05  eta: 2:17:20  time: 0.2656  data_time: 0.0186  memory: 15302  loss: 0.8211  decode.loss_ce: 0.1618  decode.acc_seg: 91.8334  loss_nce: 0.6592
+2026/01/21 15:44:03 - mmengine - INFO - Iter(train) [  250/30000]  base_lr: 1.6611e-05 lr: 1.6611e-05  eta: 2:17:04  time: 0.2657  data_time: 0.0190  memory: 15302  loss: 0.7529  decode.loss_ce: 0.1393  decode.acc_seg: 91.4835  loss_nce: 0.6136
+2026/01/21 15:44:06 - mmengine - INFO - Iter(train) [  260/30000]  base_lr: 1.7278e-05 lr: 1.7278e-05  eta: 2:16:50  time: 0.2663  data_time: 0.0192  memory: 15302  loss: 0.7148  decode.loss_ce: 0.1451  decode.acc_seg: 91.5801  loss_nce: 0.5698
+2026/01/21 15:44:09 - mmengine - INFO - Iter(train) [  270/30000]  base_lr: 1.7945e-05 lr: 1.7945e-05  eta: 2:16:35  time: 0.2654  data_time: 0.0188  memory: 15302  loss: 0.6666  decode.loss_ce: 0.1198  decode.acc_seg: 96.0041  loss_nce: 0.5468
+2026/01/21 15:44:11 - mmengine - INFO - Iter(train) [  280/30000]  base_lr: 1.8612e-05 lr: 1.8612e-05  eta: 2:16:23  time: 0.2672  data_time: 0.0190  memory: 15303  loss: 0.7002  decode.loss_ce: 0.1629  decode.acc_seg: 94.3410  loss_nce: 0.5373
+2026/01/21 15:44:14 - mmengine - INFO - Iter(train) [  290/30000]  base_lr: 1.9280e-05 lr: 1.9280e-05  eta: 2:16:12  time: 0.2665  data_time: 0.0192  memory: 15302  loss: 0.6334  decode.loss_ce: 0.1016  decode.acc_seg: 95.3465  loss_nce: 0.5317
+2026/01/21 15:44:17 - mmengine - INFO - Iter(train) [  300/30000]  base_lr: 1.9947e-05 lr: 1.9947e-05  eta: 2:16:00  time: 0.2659  data_time: 0.0190  memory: 15302  loss: 0.6351  decode.loss_ce: 0.1094  decode.acc_seg: 92.8764  loss_nce: 0.5257
+2026/01/21 15:44:19 - mmengine - INFO - Iter(train) [  310/30000]  base_lr: 2.0614e-05 lr: 2.0614e-05  eta: 2:15:49  time: 0.2666  data_time: 0.0193  memory: 15302  loss: 0.6343  decode.loss_ce: 0.1187  decode.acc_seg: 94.7425  loss_nce: 0.5156
+2026/01/21 15:44:22 - mmengine - INFO - Iter(train) [  320/30000]  base_lr: 2.1281e-05 lr: 2.1281e-05  eta: 2:15:39  time: 0.2668  data_time: 0.0196  memory: 15302  loss: 0.6238  decode.loss_ce: 0.1097  decode.acc_seg: 94.4516  loss_nce: 0.5141
+2026/01/21 15:44:25 - mmengine - INFO - Iter(train) [  330/30000]  base_lr: 2.1948e-05 lr: 2.1948e-05  eta: 2:15:30  time: 0.2667  data_time: 0.0195  memory: 15301  loss: 0.6127  decode.loss_ce: 0.1199  decode.acc_seg: 94.0644  loss_nce: 0.4928
+2026/01/21 15:44:27 - mmengine - INFO - Iter(train) [  340/30000]  base_lr: 2.2615e-05 lr: 2.2615e-05  eta: 2:15:20  time: 0.2662  data_time: 0.0191  memory: 15302  loss: 0.5927  decode.loss_ce: 0.1165  decode.acc_seg: 94.1230  loss_nce: 0.4763
+2026/01/21 15:44:30 - mmengine - INFO - Iter(train) [  350/30000]  base_lr: 2.3282e-05 lr: 2.3282e-05  eta: 2:15:11  time: 0.2666  data_time: 0.0194  memory: 15302  loss: 0.5850  decode.loss_ce: 0.1189  decode.acc_seg: 96.5494  loss_nce: 0.4660
+2026/01/21 15:44:33 - mmengine - INFO - Iter(train) [  360/30000]  base_lr: 2.3949e-05 lr: 2.3949e-05  eta: 2:15:03  time: 0.2668  data_time: 0.0193  memory: 15302  loss: 0.5392  decode.loss_ce: 0.0896  decode.acc_seg: 96.5647  loss_nce: 0.4496
+2026/01/21 15:44:35 - mmengine - INFO - Iter(train) [  370/30000]  base_lr: 2.4616e-05 lr: 2.4616e-05  eta: 2:14:54  time: 0.2661  data_time: 0.0189  memory: 15302  loss: 0.5293  decode.loss_ce: 0.1090  decode.acc_seg: 94.2306  loss_nce: 0.4203
+2026/01/21 15:44:38 - mmengine - INFO - Iter(train) [  380/30000]  base_lr: 2.5284e-05 lr: 2.5284e-05  eta: 2:14:47  time: 0.2669  data_time: 0.0198  memory: 15302  loss: 0.4986  decode.loss_ce: 0.1142  decode.acc_seg: 93.5448  loss_nce: 0.3844
+2026/01/21 15:44:41 - mmengine - INFO - Iter(train) [  390/30000]  base_lr: 2.5951e-05 lr: 2.5951e-05  eta: 2:14:41  time: 0.2690  data_time: 0.0190  memory: 15302  loss: 0.4709  decode.loss_ce: 0.1199  decode.acc_seg: 94.6093  loss_nce: 0.3509
+2026/01/21 15:44:43 - mmengine - INFO - Iter(train) [  400/30000]  base_lr: 2.6618e-05 lr: 2.6618e-05  eta: 2:14:33  time: 0.2665  data_time: 0.0182  memory: 15302  loss: 0.3789  decode.loss_ce: 0.0650  decode.acc_seg: 96.9394  loss_nce: 0.3139
+2026/01/21 15:44:46 - mmengine - INFO - Iter(train) [  410/30000]  base_lr: 2.7285e-05 lr: 2.7285e-05  eta: 2:14:27  time: 0.2677  data_time: 0.0192  memory: 15301  loss: 0.3885  decode.loss_ce: 0.0978  decode.acc_seg: 96.0823  loss_nce: 0.2907
+2026/01/21 15:44:49 - mmengine - INFO - Iter(train) [  420/30000]  base_lr: 2.7952e-05 lr: 2.7952e-05  eta: 2:14:22  time: 0.2687  data_time: 0.0195  memory: 15301  loss: 0.3536  decode.loss_ce: 0.1002  decode.acc_seg: 92.4233  loss_nce: 0.2534
+2026/01/21 15:44:51 - mmengine - INFO - Iter(train) [  430/30000]  base_lr: 2.8619e-05 lr: 2.8619e-05  eta: 2:14:16  time: 0.2682  data_time: 0.0199  memory: 15301  loss: 0.3373  decode.loss_ce: 0.0969  decode.acc_seg: 95.2066  loss_nce: 0.2405
+2026/01/21 15:44:54 - mmengine - INFO - Iter(train) [  440/30000]  base_lr: 2.9286e-05 lr: 2.9286e-05  eta: 2:14:10  time: 0.2671  data_time: 0.0187  memory: 15302  loss: 0.3081  decode.loss_ce: 0.0898  decode.acc_seg: 95.9675  loss_nce: 0.2183
+2026/01/21 15:44:57 - mmengine - INFO - Iter(train) [  450/30000]  base_lr: 2.9953e-05 lr: 2.9953e-05  eta: 2:14:04  time: 0.2674  data_time: 0.0195  memory: 15302  loss: 0.2853  decode.loss_ce: 0.0900  decode.acc_seg: 95.4965  loss_nce: 0.1953
+2026/01/21 15:44:59 - mmengine - INFO - Iter(train) [  460/30000]  base_lr: 3.0620e-05 lr: 3.0620e-05  eta: 2:13:57  time: 0.2668  data_time: 0.0191  memory: 15302  loss: 0.2569  decode.loss_ce: 0.0675  decode.acc_seg: 95.9380  loss_nce: 0.1894
+2026/01/21 15:45:02 - mmengine - INFO - Iter(train) [  470/30000]  base_lr: 3.1288e-05 lr: 3.1288e-05  eta: 2:13:52  time: 0.2684  data_time: 0.0201  memory: 15301  loss: 0.2723  decode.loss_ce: 0.0844  decode.acc_seg: 96.4971  loss_nce: 0.1879
+2026/01/21 15:45:05 - mmengine - INFO - Iter(train) [  480/30000]  base_lr: 3.1955e-05 lr: 3.1955e-05  eta: 2:13:48  time: 0.2687  data_time: 0.0208  memory: 15302  loss: 0.2341  decode.loss_ce: 0.0691  decode.acc_seg: 98.1304  loss_nce: 0.1650
+2026/01/21 15:45:07 - mmengine - INFO - Iter(train) [  490/30000]  base_lr: 3.2622e-05 lr: 3.2622e-05  eta: 2:13:42  time: 0.2672  data_time: 0.0192  memory: 15301  loss: 0.2327  decode.loss_ce: 0.0867  decode.acc_seg: 97.3208  loss_nce: 0.1460
+2026/01/21 15:45:10 - mmengine - INFO - Iter(train) [  500/30000]  base_lr: 3.3289e-05 lr: 3.3289e-05  eta: 2:13:37  time: 0.2686  data_time: 0.0209  memory: 15302  loss: 0.2297  decode.loss_ce: 0.0926  decode.acc_seg: 94.8858  loss_nce: 0.1370
+2026/01/21 15:45:13 - mmengine - INFO - Iter(train) [  510/30000]  base_lr: 3.3956e-05 lr: 3.3956e-05  eta: 2:13:32  time: 0.2669  data_time: 0.0190  memory: 15302  loss: 0.2287  decode.loss_ce: 0.0960  decode.acc_seg: 96.5932  loss_nce: 0.1327
+2026/01/21 15:45:15 - mmengine - INFO - Iter(train) [  520/30000]  base_lr: 3.4623e-05 lr: 3.4623e-05  eta: 2:13:26  time: 0.2665  data_time: 0.0185  memory: 15302  loss: 0.2069  decode.loss_ce: 0.0808  decode.acc_seg: 97.3111  loss_nce: 0.1261
+2026/01/21 15:45:18 - mmengine - INFO - Iter(train) [  530/30000]  base_lr: 3.5290e-05 lr: 3.5290e-05  eta: 2:13:21  time: 0.2666  data_time: 0.0189  memory: 15302  loss: 0.1929  decode.loss_ce: 0.0762  decode.acc_seg: 97.6037  loss_nce: 0.1167
+2026/01/21 15:45:21 - mmengine - INFO - Iter(train) [  540/30000]  base_lr: 3.5957e-05 lr: 3.5957e-05  eta: 2:13:16  time: 0.2672  data_time: 0.0197  memory: 15302  loss: 0.2033  decode.loss_ce: 0.0866  decode.acc_seg: 96.6955  loss_nce: 0.1167
+2026/01/21 15:45:23 - mmengine - INFO - Iter(train) [  550/30000]  base_lr: 3.6624e-05 lr: 3.6624e-05  eta: 2:13:11  time: 0.2678  data_time: 0.0199  memory: 15301  loss: 0.1830  decode.loss_ce: 0.0677  decode.acc_seg: 95.6962  loss_nce: 0.1153
+2026/01/21 15:45:26 - mmengine - INFO - Iter(train) [  560/30000]  base_lr: 3.7292e-05 lr: 3.7292e-05  eta: 2:13:05  time: 0.2656  data_time: 0.0175  memory: 15301  loss: 0.1598  decode.loss_ce: 0.0601  decode.acc_seg: 96.6527  loss_nce: 0.0997
+2026/01/21 15:45:29 - mmengine - INFO - Iter(train) [  570/30000]  base_lr: 3.7959e-05 lr: 3.7959e-05  eta: 2:13:00  time: 0.2672  data_time: 0.0196  memory: 15302  loss: 0.1718  decode.loss_ce: 0.0692  decode.acc_seg: 97.7599  loss_nce: 0.1025
+2026/01/21 15:45:31 - mmengine - INFO - Iter(train) [  580/30000]  base_lr: 3.8626e-05 lr: 3.8626e-05  eta: 2:12:55  time: 0.2660  data_time: 0.0192  memory: 15302  loss: 0.1826  decode.loss_ce: 0.0737  decode.acc_seg: 96.9674  loss_nce: 0.1089
+2026/01/21 15:45:34 - mmengine - INFO - Iter(train) [  590/30000]  base_lr: 3.9293e-05 lr: 3.9293e-05  eta: 2:12:50  time: 0.2668  data_time: 0.0206  memory: 15302  loss: 0.1939  decode.loss_ce: 0.0887  decode.acc_seg: 95.2732  loss_nce: 0.1052
+2026/01/21 15:45:37 - mmengine - INFO - Iter(train) [  600/30000]  base_lr: 3.9960e-05 lr: 3.9960e-05  eta: 2:12:44  time: 0.2639  data_time: 0.0173  memory: 15302  loss: 0.2015  decode.loss_ce: 0.0906  decode.acc_seg: 95.7448  loss_nce: 0.1109
+2026/01/21 15:45:39 - mmengine - INFO - Iter(train) [  610/30000]  base_lr: 4.0627e-05 lr: 4.0627e-05  eta: 2:12:39  time: 0.2654  data_time: 0.0190  memory: 15301  loss: 0.1683  decode.loss_ce: 0.0700  decode.acc_seg: 97.9361  loss_nce: 0.0983
+2026/01/21 15:45:42 - mmengine - INFO - Iter(train) [  620/30000]  base_lr: 4.1294e-05 lr: 4.1294e-05  eta: 2:12:34  time: 0.2673  data_time: 0.0200  memory: 15302  loss: 0.1652  decode.loss_ce: 0.0670  decode.acc_seg: 97.8891  loss_nce: 0.0982
+2026/01/21 15:45:45 - mmengine - INFO - Iter(train) [  630/30000]  base_lr: 4.1961e-05 lr: 4.1961e-05  eta: 2:12:29  time: 0.2658  data_time: 0.0192  memory: 15302  loss: 0.1671  decode.loss_ce: 0.0700  decode.acc_seg: 95.4996  loss_nce: 0.0970
+2026/01/21 15:45:47 - mmengine - INFO - Iter(train) [  640/30000]  base_lr: 4.2628e-05 lr: 4.2628e-05  eta: 2:12:24  time: 0.2651  data_time: 0.0184  memory: 15302  loss: 0.1712  decode.loss_ce: 0.0741  decode.acc_seg: 98.5522  loss_nce: 0.0970
+2026/01/21 15:45:50 - mmengine - INFO - Iter(train) [  650/30000]  base_lr: 4.3296e-05 lr: 4.3296e-05  eta: 2:12:19  time: 0.2647  data_time: 0.0187  memory: 15302  loss: 0.1612  decode.loss_ce: 0.0688  decode.acc_seg: 97.0266  loss_nce: 0.0924
+2026/01/21 15:45:53 - mmengine - INFO - Iter(train) [  660/30000]  base_lr: 4.3963e-05 lr: 4.3963e-05  eta: 2:12:14  time: 0.2662  data_time: 0.0199  memory: 15302  loss: 0.1621  decode.loss_ce: 0.0669  decode.acc_seg: 98.1689  loss_nce: 0.0952
+2026/01/21 15:45:55 - mmengine - INFO - Iter(train) [  670/30000]  base_lr: 4.4630e-05 lr: 4.4630e-05  eta: 2:12:09  time: 0.2647  data_time: 0.0187  memory: 15302  loss: 0.1790  decode.loss_ce: 0.0768  decode.acc_seg: 96.6356  loss_nce: 0.1023
+2026/01/21 15:45:58 - mmengine - INFO - Iter(train) [  680/30000]  base_lr: 4.5297e-05 lr: 4.5297e-05  eta: 2:12:03  time: 0.2645  data_time: 0.0183  memory: 15302  loss: 0.1713  decode.loss_ce: 0.0724  decode.acc_seg: 98.6052  loss_nce: 0.0989
+2026/01/21 15:46:01 - mmengine - INFO - Iter(train) [  690/30000]  base_lr: 4.5964e-05 lr: 4.5964e-05  eta: 2:11:58  time: 0.2647  data_time: 0.0190  memory: 15302  loss: 0.1682  decode.loss_ce: 0.0723  decode.acc_seg: 94.1446  loss_nce: 0.0958
+2026/01/21 15:46:03 - mmengine - INFO - Iter(train) [  700/30000]  base_lr: 4.6631e-05 lr: 4.6631e-05  eta: 2:11:54  time: 0.2658  data_time: 0.0195  memory: 15302  loss: 0.1891  decode.loss_ce: 0.0885  decode.acc_seg: 95.5562  loss_nce: 0.1006
+2026/01/21 15:46:06 - mmengine - INFO - Iter(train) [  710/30000]  base_lr: 4.7298e-05 lr: 4.7298e-05  eta: 2:11:49  time: 0.2652  data_time: 0.0188  memory: 15302  loss: 0.1598  decode.loss_ce: 0.0680  decode.acc_seg: 97.7089  loss_nce: 0.0919
+2026/01/21 15:46:09 - mmengine - INFO - Iter(train) [  720/30000]  base_lr: 4.7965e-05 lr: 4.7965e-05  eta: 2:11:44  time: 0.2642  data_time: 0.0181  memory: 15302  loss: 0.1602  decode.loss_ce: 0.0672  decode.acc_seg: 96.5182  loss_nce: 0.0930
+2026/01/21 15:46:11 - mmengine - INFO - Iter(train) [  730/30000]  base_lr: 4.8632e-05 lr: 4.8632e-05  eta: 2:11:39  time: 0.2646  data_time: 0.0187  memory: 15302  loss: 0.1838  decode.loss_ce: 0.0871  decode.acc_seg: 98.8559  loss_nce: 0.0967
+2026/01/21 15:46:14 - mmengine - INFO - Iter(train) [  740/30000]  base_lr: 4.9300e-05 lr: 4.9300e-05  eta: 2:11:35  time: 0.2666  data_time: 0.0210  memory: 15301  loss: 0.1728  decode.loss_ce: 0.0810  decode.acc_seg: 97.8364  loss_nce: 0.0917
+2026/01/21 15:46:17 - mmengine - INFO - Iter(train) [  750/30000]  base_lr: 4.9967e-05 lr: 4.9967e-05  eta: 2:11:31  time: 0.2649  data_time: 0.0187  memory: 15301  loss: 0.1638  decode.loss_ce: 0.0699  decode.acc_seg: 95.4309  loss_nce: 0.0939
+2026/01/21 15:46:19 - mmengine - INFO - Iter(train) [  760/30000]  base_lr: 5.0634e-05 lr: 5.0634e-05  eta: 2:11:26  time: 0.2637  data_time: 0.0179  memory: 15302  loss: 0.1564  decode.loss_ce: 0.0668  decode.acc_seg: 94.1884  loss_nce: 0.0896
+2026/01/21 15:46:22 - mmengine - INFO - Iter(train) [  770/30000]  base_lr: 5.1301e-05 lr: 5.1301e-05  eta: 2:11:21  time: 0.2647  data_time: 0.0187  memory: 15302  loss: 0.1655  decode.loss_ce: 0.0732  decode.acc_seg: 97.1220  loss_nce: 0.0923
+2026/01/21 15:46:25 - mmengine - INFO - Iter(train) [  780/30000]  base_lr: 5.1968e-05 lr: 5.1968e-05  eta: 2:11:17  time: 0.2654  data_time: 0.0196  memory: 15302  loss: 0.1602  decode.loss_ce: 0.0686  decode.acc_seg: 97.2900  loss_nce: 0.0916
+2026/01/21 15:46:27 - mmengine - INFO - Iter(train) [  790/30000]  base_lr: 5.2635e-05 lr: 5.2635e-05  eta: 2:11:12  time: 0.2638  data_time: 0.0184  memory: 15302  loss: 0.1626  decode.loss_ce: 0.0700  decode.acc_seg: 98.0540  loss_nce: 0.0926
+2026/01/21 15:46:30 - mmengine - INFO - Iter(train) [  800/30000]  base_lr: 5.3302e-05 lr: 5.3302e-05  eta: 2:11:07  time: 0.2639  data_time: 0.0180  memory: 15302  loss: 0.1728  decode.loss_ce: 0.0796  decode.acc_seg: 96.4828  loss_nce: 0.0932
+2026/01/21 15:46:32 - mmengine - INFO - Iter(train) [  810/30000]  base_lr: 5.3969e-05 lr: 5.3969e-05  eta: 2:11:03  time: 0.2656  data_time: 0.0194  memory: 15302  loss: 0.1658  decode.loss_ce: 0.0726  decode.acc_seg: 96.7073  loss_nce: 0.0932
+2026/01/21 15:46:35 - mmengine - INFO - Iter(train) [  820/30000]  base_lr: 5.4636e-05 lr: 5.4636e-05  eta: 2:10:59  time: 0.2658  data_time: 0.0198  memory: 15302  loss: 0.1716  decode.loss_ce: 0.0655  decode.acc_seg: 96.0484  loss_nce: 0.1060
+2026/01/21 15:46:38 - mmengine - INFO - Iter(train) [  830/30000]  base_lr: 5.5304e-05 lr: 5.5304e-05  eta: 2:10:55  time: 0.2646  data_time: 0.0189  memory: 15301  loss: 0.1695  decode.loss_ce: 0.0736  decode.acc_seg: 97.2786  loss_nce: 0.0958
+2026/01/21 15:46:40 - mmengine - INFO - Iter(train) [  840/30000]  base_lr: 5.5971e-05 lr: 5.5971e-05  eta: 2:10:50  time: 0.2642  data_time: 0.0182  memory: 15302  loss: 0.1570  decode.loss_ce: 0.0680  decode.acc_seg: 96.4106  loss_nce: 0.0890
+2026/01/21 15:46:43 - mmengine - INFO - Iter(train) [  850/30000]  base_lr: 5.6638e-05 lr: 5.6638e-05  eta: 2:10:46  time: 0.2647  data_time: 0.0190  memory: 15302  loss: 0.1561  decode.loss_ce: 0.0617  decode.acc_seg: 98.0618  loss_nce: 0.0944
+2026/01/21 15:46:46 - mmengine - INFO - Iter(train) [  860/30000]  base_lr: 5.7305e-05 lr: 5.7305e-05  eta: 2:10:42  time: 0.2650  data_time: 0.0195  memory: 15302  loss: 0.1746  decode.loss_ce: 0.0825  decode.acc_seg: 98.1802  loss_nce: 0.0921
+2026/01/21 15:46:48 - mmengine - INFO - Iter(train) [  870/30000]  base_lr: 5.7972e-05 lr: 5.7972e-05  eta: 2:10:38  time: 0.2642  data_time: 0.0188  memory: 15301  loss: 0.1578  decode.loss_ce: 0.0669  decode.acc_seg: 97.0376  loss_nce: 0.0909
+2026/01/21 15:46:51 - mmengine - INFO - Iter(train) [  880/30000]  base_lr: 5.8639e-05 lr: 5.8639e-05  eta: 2:10:33  time: 0.2641  data_time: 0.0183  memory: 15301  loss: 0.1814  decode.loss_ce: 0.0837  decode.acc_seg: 97.3876  loss_nce: 0.0978
+2026/01/21 15:46:54 - mmengine - INFO - Iter(train) [  890/30000]  base_lr: 5.9306e-05 lr: 5.9306e-05  eta: 2:10:29  time: 0.2650  data_time: 0.0191  memory: 15301  loss: 0.1621  decode.loss_ce: 0.0655  decode.acc_seg: 97.2313  loss_nce: 0.0966
+2026/01/21 15:46:56 - mmengine - INFO - Iter(train) [  900/30000]  base_lr: 5.9973e-05 lr: 5.9973e-05  eta: 2:10:26  time: 0.2668  data_time: 0.0200  memory: 15302  loss: 0.1688  decode.loss_ce: 0.0794  decode.acc_seg: 97.1334  loss_nce: 0.0894
+2026/01/21 15:46:59 - mmengine - INFO - Iter(train) [  910/30000]  base_lr: 6.0640e-05 lr: 6.0640e-05  eta: 2:10:30  time: 0.2912  data_time: 0.0201  memory: 15302  loss: 0.1645  decode.loss_ce: 0.0686  decode.acc_seg: 97.4596  loss_nce: 0.0958
+2026/01/21 15:47:02 - mmengine - INFO - Iter(train) [  920/30000]  base_lr: 6.1308e-05 lr: 6.1308e-05  eta: 2:10:27  time: 0.2674  data_time: 0.0183  memory: 15302  loss: 0.1527  decode.loss_ce: 0.0664  decode.acc_seg: 96.8629  loss_nce: 0.0862
+2026/01/21 15:47:05 - mmengine - INFO - Iter(train) [  930/30000]  base_lr: 6.1975e-05 lr: 6.1975e-05  eta: 2:10:24  time: 0.2687  data_time: 0.0193  memory: 15302  loss: 0.1491  decode.loss_ce: 0.0619  decode.acc_seg: 96.5347  loss_nce: 0.0873
+2026/01/21 15:47:07 - mmengine - INFO - Iter(train) [  940/30000]  base_lr: 6.2642e-05 lr: 6.2642e-05  eta: 2:10:22  time: 0.2726  data_time: 0.0204  memory: 15302  loss: 0.1545  decode.loss_ce: 0.0646  decode.acc_seg: 98.3158  loss_nce: 0.0899
+2026/01/21 15:47:10 - mmengine - INFO - Iter(train) [  950/30000]  base_lr: 6.3309e-05 lr: 6.3309e-05  eta: 2:10:19  time: 0.2667  data_time: 0.0182  memory: 15303  loss: 0.1600  decode.loss_ce: 0.0690  decode.acc_seg: 96.1881  loss_nce: 0.0910
+2026/01/21 15:47:13 - mmengine - INFO - Iter(train) [  960/30000]  base_lr: 6.3976e-05 lr: 6.3976e-05  eta: 2:10:16  time: 0.2682  data_time: 0.0191  memory: 15302  loss: 0.1681  decode.loss_ce: 0.0733  decode.acc_seg: 96.7731  loss_nce: 0.0948
+2026/01/21 15:47:15 - mmengine - INFO - Iter(train) [  970/30000]  base_lr: 6.4643e-05 lr: 6.4643e-05  eta: 2:10:13  time: 0.2682  data_time: 0.0192  memory: 15302  loss: 0.1638  decode.loss_ce: 0.0761  decode.acc_seg: 97.3832  loss_nce: 0.0877
+2026/01/21 15:47:18 - mmengine - INFO - Iter(train) [  980/30000]  base_lr: 6.5310e-05 lr: 6.5310e-05  eta: 2:10:10  time: 0.2682  data_time: 0.0196  memory: 15302  loss: 0.1545  decode.loss_ce: 0.0653  decode.acc_seg: 97.1430  loss_nce: 0.0892
+2026/01/21 15:47:21 - mmengine - INFO - Iter(train) [  990/30000]  base_lr: 6.5977e-05 lr: 6.5977e-05  eta: 2:10:07  time: 0.2673  data_time: 0.0186  memory: 15303  loss: 0.1615  decode.loss_ce: 0.0712  decode.acc_seg: 96.7930  loss_nce: 0.0903
+2026/01/21 15:47:23 - mmengine - INFO - Exp name: MdaCD_LEVIRCD_20260121_154247
+2026/01/21 15:47:23 - mmengine - INFO - Iter(train) [ 1000/30000]  base_lr: 6.6644e-05 lr: 6.6644e-05  eta: 2:10:04  time: 0.2677  data_time: 0.0181  memory: 15302  loss: 0.1642  decode.loss_ce: 0.0734  decode.acc_seg: 96.4272  loss_nce: 0.0908
+2026/01/21 15:47:26 - mmengine - INFO - Iter(val) [10/64]    eta: 0:00:11  time: 0.2142  data_time: 0.0310  memory: 27995  
+2026/01/21 15:47:26 - mmengine - INFO - Iter(val) [20/64]    eta: 0:00:05  time: 0.0555  data_time: 0.0069  memory: 3251  
+2026/01/21 15:47:27 - mmengine - INFO - Iter(val) [30/64]    eta: 0:00:03  time: 0.0554  data_time: 0.0068  memory: 3251  
+2026/01/21 15:47:27 - mmengine - INFO - Iter(val) [40/64]    eta: 0:00:02  time: 0.0553  data_time: 0.0068  memory: 3251  
+2026/01/21 15:47:28 - mmengine - INFO - Iter(val) [50/64]    eta: 0:00:01  time: 0.0554  data_time: 0.0069  memory: 3251  
+2026/01/21 15:47:28 - mmengine - INFO - Iter(val) [60/64]    eta: 0:00:00  time: 0.0553  data_time: 0.0068  memory: 3251  
+2026/01/21 15:47:29 - mmengine - INFO - per class results:
+2026/01/21 15:47:29 - mmengine - INFO - 
++------------+-------+-------+
+|   Class    |  IoU  |  Acc  |
++------------+-------+-------+
+| background | 97.72 | 98.32 |
+|  building  | 62.15 |  86.0 |
++------------+-------+-------+
+2026/01/21 15:47:29 - mmengine - INFO - Iter(val) [64/64]    aAcc: 97.8000  mIoU: 79.9300  mAcc: 92.1600  data_time: 0.0106  time: 0.0802
+2026/01/21 15:47:30 - mmengine - INFO - The best checkpoint with 79.9300 mIoU at 1000 iter is saved to best_mIoU_iter_1000.pth.
+2026/01/21 15:47:33 - mmengine - INFO - Iter(train) [ 1010/30000]  base_lr: 6.7312e-05 lr: 6.7312e-05  eta: 2:10:49  time: 0.4364  data_time: 0.1803  memory: 15304  loss: 0.1457  decode.loss_ce: 0.0562  decode.acc_seg: 98.3933  loss_nce: 0.0895
+2026/01/21 15:47:36 - mmengine - INFO - Iter(train) [ 1020/30000]  base_lr: 6.7979e-05 lr: 6.7979e-05  eta: 2:10:47  time: 0.2729  data_time: 0.0205  memory: 15297  loss: 0.1556  decode.loss_ce: 0.0671  decode.acc_seg: 97.3535  loss_nce: 0.0885
+2026/01/21 15:47:38 - mmengine - INFO - Iter(train) [ 1030/30000]  base_lr: 6.8646e-05 lr: 6.8646e-05  eta: 2:10:44  time: 0.2715  data_time: 0.0193  memory: 15297  loss: 0.1612  decode.loss_ce: 0.0679  decode.acc_seg: 96.9675  loss_nce: 0.0933
+2026/01/21 15:47:41 - mmengine - INFO - Iter(train) [ 1040/30000]  base_lr: 6.9313e-05 lr: 6.9313e-05  eta: 2:10:42  time: 0.2711  data_time: 0.0189  memory: 15298  loss: 0.1849  decode.loss_ce: 0.0907  decode.acc_seg: 95.3911  loss_nce: 0.0941
+2026/01/21 15:47:44 - mmengine - INFO - Iter(train) [ 1050/30000]  base_lr: 6.9980e-05 lr: 6.9980e-05  eta: 2:10:39  time: 0.2708  data_time: 0.0191  memory: 15297  loss: 0.1720  decode.loss_ce: 0.0830  decode.acc_seg: 97.5581  loss_nce: 0.0890
+2026/01/21 15:47:46 - mmengine - INFO - Iter(train) [ 1060/30000]  base_lr: 7.0647e-05 lr: 7.0647e-05  eta: 2:10:36  time: 0.2696  data_time: 0.0194  memory: 15297  loss: 0.1677  decode.loss_ce: 0.0763  decode.acc_seg: 94.3890  loss_nce: 0.0914
+2026/01/21 15:47:49 - mmengine - INFO - Iter(train) [ 1070/30000]  base_lr: 7.1314e-05 lr: 7.1314e-05  eta: 2:10:33  time: 0.2698  data_time: 0.0193  memory: 15298  loss: 0.1749  decode.loss_ce: 0.0838  decode.acc_seg: 96.6220  loss_nce: 0.0911
+2026/01/21 15:47:52 - mmengine - INFO - Iter(train) [ 1080/30000]  base_lr: 7.1981e-05 lr: 7.1981e-05  eta: 2:10:30  time: 0.2703  data_time: 0.0194  memory: 15297  loss: 0.1515  decode.loss_ce: 0.0618  decode.acc_seg: 95.8200  loss_nce: 0.0898
+2026/01/21 15:47:55 - mmengine - INFO - Iter(train) [ 1090/30000]  base_lr: 7.2648e-05 lr: 7.2648e-05  eta: 2:10:27  time: 0.2693  data_time: 0.0193  memory: 15297  loss: 0.1700  decode.loss_ce: 0.0792  decode.acc_seg: 97.2832  loss_nce: 0.0907
+2026/01/21 15:47:57 - mmengine - INFO - Iter(train) [ 1100/30000]  base_lr: 7.3316e-05 lr: 7.3316e-05  eta: 2:10:24  time: 0.2700  data_time: 0.0193  memory: 15298  loss: 0.1702  decode.loss_ce: 0.0727  decode.acc_seg: 97.9263  loss_nce: 0.0975
+2026/01/21 15:48:00 - mmengine - INFO - Iter(train) [ 1110/30000]  base_lr: 7.3983e-05 lr: 7.3983e-05  eta: 2:10:21  time: 0.2697  data_time: 0.0194  memory: 15297  loss: 0.1721  decode.loss_ce: 0.0767  decode.acc_seg: 95.2335  loss_nce: 0.0954
+2026/01/21 15:48:03 - mmengine - INFO - Iter(train) [ 1120/30000]  base_lr: 7.4650e-05 lr: 7.4650e-05  eta: 2:10:18  time: 0.2699  data_time: 0.0196  memory: 15297  loss: 0.1674  decode.loss_ce: 0.0765  decode.acc_seg: 94.6007  loss_nce: 0.0909
+2026/01/21 15:48:05 - mmengine - INFO - Iter(train) [ 1130/30000]  base_lr: 7.5317e-05 lr: 7.5317e-05  eta: 2:10:15  time: 0.2693  data_time: 0.0192  memory: 15297  loss: 0.1607  decode.loss_ce: 0.0733  decode.acc_seg: 97.5857  loss_nce: 0.0874
+2026/01/21 15:48:08 - mmengine - INFO - Iter(train) [ 1140/30000]  base_lr: 7.5984e-05 lr: 7.5984e-05  eta: 2:10:13  time: 0.2709  data_time: 0.0203  memory: 15296  loss: 0.1696  decode.loss_ce: 0.0793  decode.acc_seg: 96.3238  loss_nce: 0.0903
+2026/01/21 15:48:11 - mmengine - INFO - Iter(train) [ 1150/30000]  base_lr: 7.6651e-05 lr: 7.6651e-05  eta: 2:10:09  time: 0.2688  data_time: 0.0183  memory: 15297  loss: 0.1675  decode.loss_ce: 0.0759  decode.acc_seg: 97.2049  loss_nce: 0.0915
+2026/01/21 15:48:13 - mmengine - INFO - Iter(train) [ 1160/30000]  base_lr: 7.7318e-05 lr: 7.7318e-05  eta: 2:10:06  time: 0.2693  data_time: 0.0193  memory: 15297  loss: 0.1349  decode.loss_ce: 0.0469  decode.acc_seg: 96.7931  loss_nce: 0.0880
+2026/01/21 15:48:16 - mmengine - INFO - Iter(train) [ 1170/30000]  base_lr: 7.7985e-05 lr: 7.7985e-05  eta: 2:10:02  time: 0.2659  data_time: 0.0189  memory: 15297  loss: 0.1411  decode.loss_ce: 0.0568  decode.acc_seg: 97.2922  loss_nce: 0.0843
+2026/01/21 15:48:19 - mmengine - INFO - Iter(train) [ 1180/30000]  base_lr: 7.8652e-05 lr: 7.8652e-05  eta: 2:09:59  time: 0.2676  data_time: 0.0203  memory: 15298  loss: 0.1681  decode.loss_ce: 0.0768  decode.acc_seg: 97.6267  loss_nce: 0.0912
+2026/01/21 15:48:21 - mmengine - INFO - Iter(train) [ 1190/30000]  base_lr: 7.9320e-05 lr: 7.9320e-05  eta: 2:09:55  time: 0.2655  data_time: 0.0185  memory: 15298  loss: 0.1613  decode.loss_ce: 0.0734  decode.acc_seg: 95.8906  loss_nce: 0.0879
+2026/01/21 15:48:24 - mmengine - INFO - Iter(train) [ 1200/30000]  base_lr: 7.9987e-05 lr: 7.9987e-05  eta: 2:09:51  time: 0.2664  data_time: 0.0193  memory: 15297  loss: 0.1634  decode.loss_ce: 0.0722  decode.acc_seg: 97.2442  loss_nce: 0.0912
+2026/01/21 15:48:27 - mmengine - INFO - Iter(train) [ 1210/30000]  base_lr: 8.0654e-05 lr: 8.0654e-05  eta: 2:09:48  time: 0.2669  data_time: 0.0200  memory: 15297  loss: 0.1513  decode.loss_ce: 0.0596  decode.acc_seg: 96.9918  loss_nce: 0.0918
+2026/01/21 15:48:29 - mmengine - INFO - Iter(train) [ 1220/30000]  base_lr: 8.1321e-05 lr: 8.1321e-05  eta: 2:09:44  time: 0.2653  data_time: 0.0183  memory: 15297  loss: 0.1400  decode.loss_ce: 0.0569  decode.acc_seg: 98.9377  loss_nce: 0.0831
+2026/01/21 15:48:32 - mmengine - INFO - Iter(train) [ 1230/30000]  base_lr: 8.1988e-05 lr: 8.1988e-05  eta: 2:09:40  time: 0.2662  data_time: 0.0192  memory: 15297  loss: 0.1498  decode.loss_ce: 0.0656  decode.acc_seg: 98.2894  loss_nce: 0.0842
+2026/01/21 15:48:35 - mmengine - INFO - Iter(train) [ 1240/30000]  base_lr: 8.2655e-05 lr: 8.2655e-05  eta: 2:09:36  time: 0.2657  data_time: 0.0189  memory: 15298  loss: 0.1383  decode.loss_ce: 0.0601  decode.acc_seg: 97.6793  loss_nce: 0.0782
+2026/01/21 15:48:37 - mmengine - INFO - Iter(train) [ 1250/30000]  base_lr: 8.3322e-05 lr: 8.3322e-05  eta: 2:09:33  time: 0.2671  data_time: 0.0199  memory: 15297  loss: 0.1496  decode.loss_ce: 0.0619  decode.acc_seg: 98.2446  loss_nce: 0.0877
+2026/01/21 15:48:40 - mmengine - INFO - Iter(train) [ 1260/30000]  base_lr: 8.3989e-05 lr: 8.3989e-05  eta: 2:09:30  time: 0.2680  data_time: 0.0183  memory: 15297  loss: 0.1394  decode.loss_ce: 0.0573  decode.acc_seg: 96.6752  loss_nce: 0.0820
+2026/01/21 15:48:43 - mmengine - INFO - Iter(train) [ 1270/30000]  base_lr: 8.4656e-05 lr: 8.4656e-05  eta: 2:09:26  time: 0.2670  data_time: 0.0192  memory: 15296  loss: 0.1447  decode.loss_ce: 0.0638  decode.acc_seg: 98.7408  loss_nce: 0.0810
+2026/01/21 15:48:45 - mmengine - INFO - Iter(train) [ 1280/30000]  base_lr: 8.5324e-05 lr: 8.5324e-05  eta: 2:09:23  time: 0.2664  data_time: 0.0191  memory: 15296  loss: 0.1578  decode.loss_ce: 0.0688  decode.acc_seg: 98.2114  loss_nce: 0.0890
+2026/01/21 15:48:48 - mmengine - INFO - Iter(train) [ 1290/30000]  base_lr: 8.5991e-05 lr: 8.5991e-05  eta: 2:09:19  time: 0.2673  data_time: 0.0198  memory: 15297  loss: 0.1441  decode.loss_ce: 0.0612  decode.acc_seg: 98.2912  loss_nce: 0.0829
+2026/01/21 15:48:51 - mmengine - INFO - Iter(train) [ 1300/30000]  base_lr: 8.6658e-05 lr: 8.6658e-05  eta: 2:09:15  time: 0.2658  data_time: 0.0184  memory: 15297  loss: 0.1566  decode.loss_ce: 0.0674  decode.acc_seg: 97.8868  loss_nce: 0.0892
+2026/01/21 15:48:53 - mmengine - INFO - Iter(train) [ 1310/30000]  base_lr: 8.7325e-05 lr: 8.7325e-05  eta: 2:09:12  time: 0.2675  data_time: 0.0191  memory: 15297  loss: 0.1454  decode.loss_ce: 0.0607  decode.acc_seg: 98.1019  loss_nce: 0.0847
+2026/01/21 15:48:56 - mmengine - INFO - Iter(train) [ 1320/30000]  base_lr: 8.7992e-05 lr: 8.7992e-05  eta: 2:09:09  time: 0.2703  data_time: 0.0197  memory: 15298  loss: 0.1487  decode.loss_ce: 0.0622  decode.acc_seg: 97.5432  loss_nce: 0.0865
+2026/01/21 15:48:59 - mmengine - INFO - Iter(train) [ 1330/30000]  base_lr: 8.8659e-05 lr: 8.8659e-05  eta: 2:09:07  time: 0.2691  data_time: 0.0195  memory: 15297  loss: 0.1568  decode.loss_ce: 0.0678  decode.acc_seg: 97.2287  loss_nce: 0.0889
+2026/01/21 15:49:01 - mmengine - INFO - Iter(train) [ 1340/30000]  base_lr: 8.9326e-05 lr: 8.9326e-05  eta: 2:09:03  time: 0.2661  data_time: 0.0192  memory: 15297  loss: 0.1616  decode.loss_ce: 0.0660  decode.acc_seg: 97.7312  loss_nce: 0.0957
+2026/01/21 15:49:04 - mmengine - INFO - Iter(train) [ 1350/30000]  base_lr: 8.9993e-05 lr: 8.9993e-05  eta: 2:09:00  time: 0.2673  data_time: 0.0194  memory: 15298  loss: 0.1847  decode.loss_ce: 0.0960  decode.acc_seg: 95.7923  loss_nce: 0.0888
+2026/01/21 15:49:07 - mmengine - INFO - Iter(train) [ 1360/30000]  base_lr: 9.0660e-05 lr: 9.0660e-05  eta: 2:08:56  time: 0.2664  data_time: 0.0191  memory: 15297  loss: 0.1623  decode.loss_ce: 0.0668  decode.acc_seg: 97.3896  loss_nce: 0.0955
+2026/01/21 15:49:09 - mmengine - INFO - Iter(train) [ 1370/30000]  base_lr: 9.1328e-05 lr: 9.1328e-05  eta: 2:08:53  time: 0.2697  data_time: 0.0197  memory: 15297  loss: 0.1998  decode.loss_ce: 0.1092  decode.acc_seg: 96.1313  loss_nce: 0.0905
+2026/01/21 15:49:12 - mmengine - INFO - Iter(train) [ 1380/30000]  base_lr: 9.1995e-05 lr: 9.1995e-05  eta: 2:08:51  time: 0.2701  data_time: 0.0195  memory: 15297  loss: 0.1700  decode.loss_ce: 0.0798  decode.acc_seg: 97.2495  loss_nce: 0.0902
+2026/01/21 15:49:15 - mmengine - INFO - Iter(train) [ 1390/30000]  base_lr: 9.2662e-05 lr: 9.2662e-05  eta: 2:08:47  time: 0.2675  data_time: 0.0190  memory: 15296  loss: 0.1718  decode.loss_ce: 0.0825  decode.acc_seg: 97.9718  loss_nce: 0.0894
+2026/01/21 15:49:18 - mmengine - INFO - Iter(train) [ 1400/30000]  base_lr: 9.3329e-05 lr: 9.3329e-05  eta: 2:08:44  time: 0.2674  data_time: 0.0198  memory: 15297  loss: 0.1597  decode.loss_ce: 0.0737  decode.acc_seg: 95.5507  loss_nce: 0.0861
+2026/01/21 15:49:20 - mmengine - INFO - Iter(train) [ 1410/30000]  base_lr: 9.3996e-05 lr: 9.3996e-05  eta: 2:08:40  time: 0.2654  data_time: 0.0180  memory: 15297  loss: 0.1644  decode.loss_ce: 0.0785  decode.acc_seg: 95.7110  loss_nce: 0.0859
+2026/01/21 15:49:23 - mmengine - INFO - Iter(train) [ 1420/30000]  base_lr: 9.4663e-05 lr: 9.4663e-05  eta: 2:08:37  time: 0.2661  data_time: 0.0190  memory: 15297  loss: 0.1515  decode.loss_ce: 0.0649  decode.acc_seg: 97.7863  loss_nce: 0.0866
+2026/01/21 15:49:26 - mmengine - INFO - Iter(train) [ 1430/30000]  base_lr: 9.5330e-05 lr: 9.5330e-05  eta: 2:08:34  time: 0.2671  data_time: 0.0192  memory: 15297  loss: 0.1620  decode.loss_ce: 0.0735  decode.acc_seg: 96.9398  loss_nce: 0.0885
+2026/01/21 15:49:28 - mmengine - INFO - Iter(train) [ 1440/30000]  base_lr: 9.5997e-05 lr: 9.5997e-05  eta: 2:08:30  time: 0.2659  data_time: 0.0186  memory: 15297  loss: 0.1495  decode.loss_ce: 0.0627  decode.acc_seg: 97.2210  loss_nce: 0.0869
+2026/01/21 15:49:31 - mmengine - INFO - Iter(train) [ 1450/30000]  base_lr: 9.6664e-05 lr: 9.6664e-05  eta: 2:08:27  time: 0.2669  data_time: 0.0195  memory: 15297  loss: 0.1544  decode.loss_ce: 0.0643  decode.acc_seg: 96.7483  loss_nce: 0.0901
+2026/01/21 15:49:33 - mmengine - INFO - Iter(train) [ 1460/30000]  base_lr: 9.7332e-05 lr: 9.7332e-05  eta: 2:08:23  time: 0.2653  data_time: 0.0179  memory: 15297  loss: 0.1323  decode.loss_ce: 0.0518  decode.acc_seg: 97.3898  loss_nce: 0.0805
+2026/01/21 15:49:36 - mmengine - INFO - Iter(train) [ 1470/30000]  base_lr: 9.7999e-05 lr: 9.7999e-05  eta: 2:08:20  time: 0.2667  data_time: 0.0187  memory: 15297  loss: 0.1642  decode.loss_ce: 0.0742  decode.acc_seg: 97.5486  loss_nce: 0.0901
+2026/01/21 15:49:39 - mmengine - INFO - Iter(train) [ 1480/30000]  base_lr: 9.8666e-05 lr: 9.8666e-05  eta: 2:08:18  time: 0.2733  data_time: 0.0212  memory: 15297  loss: 0.1430  decode.loss_ce: 0.0612  decode.acc_seg: 98.8992  loss_nce: 0.0818
+2026/01/21 15:49:42 - mmengine - INFO - Iter(train) [ 1490/30000]  base_lr: 9.9333e-05 lr: 9.9333e-05  eta: 2:08:17  time: 0.2791  data_time: 0.0228  memory: 15297  loss: 0.1462  decode.loss_ce: 0.0593  decode.acc_seg: 98.0744  loss_nce: 0.0869
+2026/01/21 15:49:44 - mmengine - INFO - Iter(train) [ 1500/30000]  base_lr: 1.0000e-04 lr: 1.0000e-04  eta: 2:08:16  time: 0.2767  data_time: 0.0212  memory: 15297  loss: 0.1556  decode.loss_ce: 0.0717  decode.acc_seg: 97.1879  loss_nce: 0.0839
+2026/01/21 15:49:47 - mmengine - INFO - Iter(train) [ 1510/30000]  base_lr: 9.9968e-05 lr: 9.9968e-05  eta: 2:08:13  time: 0.2730  data_time: 0.0210  memory: 15297  loss: 0.1375  decode.loss_ce: 0.0523  decode.acc_seg: 98.7713  loss_nce: 0.0852
+2026/01/21 15:49:50 - mmengine - INFO - Iter(train) [ 1520/30000]  base_lr: 9.9933e-05 lr: 9.9933e-05  eta: 2:08:11  time: 0.2706  data_time: 0.0213  memory: 15298  loss: 0.1636  decode.loss_ce: 0.0682  decode.acc_seg: 96.7525  loss_nce: 0.0953
+2026/01/21 15:49:53 - mmengine - INFO - Iter(train) [ 1530/30000]  base_lr: 9.9898e-05 lr: 9.9898e-05  eta: 2:08:08  time: 0.2695  data_time: 0.0202  memory: 15297  loss: 0.1426  decode.loss_ce: 0.0563  decode.acc_seg: 97.2294  loss_nce: 0.0863
+2026/01/21 15:49:55 - mmengine - INFO - Iter(train) [ 1540/30000]  base_lr: 9.9863e-05 lr: 9.9863e-05  eta: 2:08:06  time: 0.2748  data_time: 0.0206  memory: 15297  loss: 0.1596  decode.loss_ce: 0.0752  decode.acc_seg: 95.7969  loss_nce: 0.0845
+2026/01/21 15:49:58 - mmengine - INFO - Iter(train) [ 1550/30000]  base_lr: 9.9828e-05 lr: 9.9828e-05  eta: 2:08:05  time: 0.2782  data_time: 0.0216  memory: 15297  loss: 0.1430  decode.loss_ce: 0.0609  decode.acc_seg: 97.5224  loss_nce: 0.0821
+2026/01/21 15:50:01 - mmengine - INFO - Iter(train) [ 1560/30000]  base_lr: 9.9793e-05 lr: 9.9793e-05  eta: 2:08:04  time: 0.2794  data_time: 0.0222  memory: 15297  loss: 0.1634  decode.loss_ce: 0.0815  decode.acc_seg: 98.7796  loss_nce: 0.0818
+2026/01/21 15:50:04 - mmengine - INFO - Iter(train) [ 1570/30000]  base_lr: 9.9758e-05 lr: 9.9758e-05  eta: 2:08:02  time: 0.2762  data_time: 0.0210  memory: 15297  loss: 0.1475  decode.loss_ce: 0.0658  decode.acc_seg: 96.0116  loss_nce: 0.0817
+2026/01/21 15:50:06 - mmengine - INFO - Iter(train) [ 1580/30000]  base_lr: 9.9723e-05 lr: 9.9723e-05  eta: 2:08:00  time: 0.2729  data_time: 0.0205  memory: 15296  loss: 0.1599  decode.loss_ce: 0.0724  decode.acc_seg: 97.3636  loss_nce: 0.0875
+2026/01/21 15:50:09 - mmengine - INFO - Iter(train) [ 1590/30000]  base_lr: 9.9688e-05 lr: 9.9688e-05  eta: 2:07:58  time: 0.2709  data_time: 0.0204  memory: 15297  loss: 0.1454  decode.loss_ce: 0.0654  decode.acc_seg: 97.5462  loss_nce: 0.0800
+2026/01/21 15:50:12 - mmengine - INFO - Iter(train) [ 1600/30000]  base_lr: 9.9653e-05 lr: 9.9653e-05  eta: 2:07:55  time: 0.2737  data_time: 0.0217  memory: 15296  loss: 0.1567  decode.loss_ce: 0.0671  decode.acc_seg: 97.5990  loss_nce: 0.0896
+2026/01/21 15:50:15 - mmengine - INFO - Iter(train) [ 1610/30000]  base_lr: 9.9618e-05 lr: 9.9618e-05  eta: 2:07:53  time: 0.2736  data_time: 0.0204  memory: 15297  loss: 0.1839  decode.loss_ce: 0.0902  decode.acc_seg: 96.2960  loss_nce: 0.0937
+2026/01/21 15:50:17 - mmengine - INFO - Iter(train) [ 1620/30000]  base_lr: 9.9582e-05 lr: 9.9582e-05  eta: 2:07:51  time: 0.2738  data_time: 0.0196  memory: 15297  loss: 0.1528  decode.loss_ce: 0.0694  decode.acc_seg: 95.1998  loss_nce: 0.0834
+2026/01/21 15:50:20 - mmengine - INFO - Iter(train) [ 1630/30000]  base_lr: 9.9547e-05 lr: 9.9547e-05  eta: 2:07:50  time: 0.2760  data_time: 0.0215  memory: 15297  loss: 0.1585  decode.loss_ce: 0.0733  decode.acc_seg: 95.9844  loss_nce: 0.0852
+2026/01/21 15:50:23 - mmengine - INFO - Iter(train) [ 1640/30000]  base_lr: 9.9512e-05 lr: 9.9512e-05  eta: 2:07:48  time: 0.2789  data_time: 0.0224  memory: 15297  loss: 0.1519  decode.loss_ce: 0.0635  decode.acc_seg: 98.3541  loss_nce: 0.0884
+2026/01/21 15:50:26 - mmengine - INFO - Iter(train) [ 1650/30000]  base_lr: 9.9477e-05 lr: 9.9477e-05  eta: 2:07:46  time: 0.2744  data_time: 0.0208  memory: 15297  loss: 0.1766  decode.loss_ce: 0.0875  decode.acc_seg: 94.9614  loss_nce: 0.0891
+2026/01/21 15:50:28 - mmengine - INFO - Iter(train) [ 1660/30000]  base_lr: 9.9442e-05 lr: 9.9442e-05  eta: 2:07:44  time: 0.2731  data_time: 0.0200  memory: 15297  loss: 0.1576  decode.loss_ce: 0.0726  decode.acc_seg: 97.5440  loss_nce: 0.0850
+2026/01/21 15:50:31 - mmengine - INFO - Iter(train) [ 1670/30000]  base_lr: 9.9407e-05 lr: 9.9407e-05  eta: 2:07:42  time: 0.2732  data_time: 0.0209  memory: 15297  loss: 0.1484  decode.loss_ce: 0.0671  decode.acc_seg: 96.3304  loss_nce: 0.0813
+2026/01/21 15:50:34 - mmengine - INFO - Iter(train) [ 1680/30000]  base_lr: 9.9372e-05 lr: 9.9372e-05  eta: 2:07:40  time: 0.2739  data_time: 0.0215  memory: 15297  loss: 0.1526  decode.loss_ce: 0.0657  decode.acc_seg: 97.1251  loss_nce: 0.0869
+2026/01/21 15:50:37 - mmengine - INFO - Iter(train) [ 1690/30000]  base_lr: 9.9337e-05 lr: 9.9337e-05  eta: 2:07:38  time: 0.2792  data_time: 0.0216  memory: 15297  loss: 0.1580  decode.loss_ce: 0.0609  decode.acc_seg: 97.6523  loss_nce: 0.0971
+2026/01/21 15:50:39 - mmengine - INFO - Iter(train) [ 1700/30000]  base_lr: 9.9302e-05 lr: 9.9302e-05  eta: 2:07:36  time: 0.2753  data_time: 0.0205  memory: 15297  loss: 0.1555  decode.loss_ce: 0.0589  decode.acc_seg: 96.6314  loss_nce: 0.0966
+2026/01/21 15:50:42 - mmengine - INFO - Iter(train) [ 1710/30000]  base_lr: 9.9267e-05 lr: 9.9267e-05  eta: 2:07:34  time: 0.2720  data_time: 0.0213  memory: 15296  loss: 0.2068  decode.loss_ce: 0.1069  decode.acc_seg: 94.8393  loss_nce: 0.0999
+2026/01/21 15:50:45 - mmengine - INFO - Iter(train) [ 1720/30000]  base_lr: 9.9232e-05 lr: 9.9232e-05  eta: 2:07:32  time: 0.2761  data_time: 0.0217  memory: 15298  loss: 0.1674  decode.loss_ce: 0.0665  decode.acc_seg: 97.3673  loss_nce: 0.1009
+2026/01/21 15:50:48 - mmengine - INFO - Iter(train) [ 1730/30000]  base_lr: 9.9196e-05 lr: 9.9196e-05  eta: 2:07:30  time: 0.2756  data_time: 0.0220  memory: 15296  loss: 0.1679  decode.loss_ce: 0.0767  decode.acc_seg: 97.6323  loss_nce: 0.0912
+2026/01/21 15:50:50 - mmengine - INFO - Iter(train) [ 1740/30000]  base_lr: 9.9161e-05 lr: 9.9161e-05  eta: 2:07:27  time: 0.2695  data_time: 0.0192  memory: 15297  loss: 0.1650  decode.loss_ce: 0.0786  decode.acc_seg: 97.9113  loss_nce: 0.0864
+2026/01/21 15:50:53 - mmengine - INFO - Iter(train) [ 1750/30000]  base_lr: 9.9126e-05 lr: 9.9126e-05  eta: 2:07:25  time: 0.2738  data_time: 0.0207  memory: 15297  loss: 0.1627  decode.loss_ce: 0.0746  decode.acc_seg: 97.7552  loss_nce: 0.0881
+2026/01/21 15:50:56 - mmengine - INFO - Iter(train) [ 1760/30000]  base_lr: 9.9091e-05 lr: 9.9091e-05  eta: 2:07:24  time: 0.2797  data_time: 0.0220  memory: 15297  loss: 0.1365  decode.loss_ce: 0.0540  decode.acc_seg: 95.1275  loss_nce: 0.0825
+2026/01/21 15:50:59 - mmengine - INFO - Iter(train) [ 1770/30000]  base_lr: 9.9056e-05 lr: 9.9056e-05  eta: 2:07:22  time: 0.2743  data_time: 0.0200  memory: 15297  loss: 0.1489  decode.loss_ce: 0.0604  decode.acc_seg: 97.5457  loss_nce: 0.0885
+2026/01/21 15:51:01 - mmengine - INFO - Iter(train) [ 1780/30000]  base_lr: 9.9021e-05 lr: 9.9021e-05  eta: 2:07:20  time: 0.2775  data_time: 0.0215  memory: 15296  loss: 0.1580  decode.loss_ce: 0.0781  decode.acc_seg: 96.9376  loss_nce: 0.0798
+2026/01/21 15:51:04 - mmengine - INFO - Iter(train) [ 1790/30000]  base_lr: 9.8986e-05 lr: 9.8986e-05  eta: 2:07:18  time: 0.2706  data_time: 0.0204  memory: 15296  loss: 0.1540  decode.loss_ce: 0.0723  decode.acc_seg: 97.8982  loss_nce: 0.0817
+2026/01/21 15:51:07 - mmengine - INFO - Iter(train) [ 1800/30000]  base_lr: 9.8951e-05 lr: 9.8951e-05  eta: 2:07:15  time: 0.2741  data_time: 0.0215  memory: 15297  loss: 0.1500  decode.loss_ce: 0.0645  decode.acc_seg: 96.6654  loss_nce: 0.0855
+2026/01/21 15:51:10 - mmengine - INFO - Iter(train) [ 1810/30000]  base_lr: 9.8916e-05 lr: 9.8916e-05  eta: 2:07:13  time: 0.2758  data_time: 0.0195  memory: 15298  loss: 0.1491  decode.loss_ce: 0.0661  decode.acc_seg: 97.8139  loss_nce: 0.0830
+2026/01/21 15:51:12 - mmengine - INFO - Iter(train) [ 1820/30000]  base_lr: 9.8881e-05 lr: 9.8881e-05  eta: 2:07:11  time: 0.2743  data_time: 0.0205  memory: 15296  loss: 0.1489  decode.loss_ce: 0.0663  decode.acc_seg: 97.2745  loss_nce: 0.0826
+2026/01/21 15:51:15 - mmengine - INFO - Iter(train) [ 1830/30000]  base_lr: 9.8846e-05 lr: 9.8846e-05  eta: 2:07:09  time: 0.2749  data_time: 0.0203  memory: 15297  loss: 0.1490  decode.loss_ce: 0.0680  decode.acc_seg: 97.7238  loss_nce: 0.0811
+2026/01/21 15:51:18 - mmengine - INFO - Iter(train) [ 1840/30000]  base_lr: 9.8810e-05 lr: 9.8810e-05  eta: 2:07:07  time: 0.2748  data_time: 0.0203  memory: 15297  loss: 0.1434  decode.loss_ce: 0.0659  decode.acc_seg: 96.0028  loss_nce: 0.0775
+2026/01/21 15:51:21 - mmengine - INFO - Iter(train) [ 1850/30000]  base_lr: 9.8775e-05 lr: 9.8775e-05  eta: 2:07:04  time: 0.2712  data_time: 0.0213  memory: 15297  loss: 0.1415  decode.loss_ce: 0.0625  decode.acc_seg: 94.8978  loss_nce: 0.0789
+2026/01/21 15:51:23 - mmengine - INFO - Iter(train) [ 1860/30000]  base_lr: 9.8740e-05 lr: 9.8740e-05  eta: 2:07:02  time: 0.2700  data_time: 0.0195  memory: 15297  loss: 0.1436  decode.loss_ce: 0.0614  decode.acc_seg: 97.7454  loss_nce: 0.0822
+2026/01/21 15:51:26 - mmengine - INFO - Iter(train) [ 1870/30000]  base_lr: 9.8705e-05 lr: 9.8705e-05  eta: 2:06:59  time: 0.2739  data_time: 0.0207  memory: 15297  loss: 0.1603  decode.loss_ce: 0.0836  decode.acc_seg: 97.6633  loss_nce: 0.0767
+2026/01/21 15:51:29 - mmengine - INFO - Iter(train) [ 1880/30000]  base_lr: 9.8670e-05 lr: 9.8670e-05  eta: 2:06:57  time: 0.2728  data_time: 0.0214  memory: 15297  loss: 0.1651  decode.loss_ce: 0.0856  decode.acc_seg: 95.8155  loss_nce: 0.0795
+2026/01/21 15:51:31 - mmengine - INFO - Iter(train) [ 1890/30000]  base_lr: 9.8635e-05 lr: 9.8635e-05  eta: 2:06:54  time: 0.2713  data_time: 0.0211  memory: 15297  loss: 0.1580  decode.loss_ce: 0.0814  decode.acc_seg: 97.6714  loss_nce: 0.0766
+2026/01/21 15:51:34 - mmengine - INFO - Iter(train) [ 1900/30000]  base_lr: 9.8600e-05 lr: 9.8600e-05  eta: 2:06:52  time: 0.2750  data_time: 0.0206  memory: 15297  loss: 0.1655  decode.loss_ce: 0.0722  decode.acc_seg: 97.0884  loss_nce: 0.0933
+2026/01/21 15:51:37 - mmengine - INFO - Iter(train) [ 1910/30000]  base_lr: 9.8565e-05 lr: 9.8565e-05  eta: 2:06:50  time: 0.2742  data_time: 0.0211  memory: 15297  loss: 0.1770  decode.loss_ce: 0.0736  decode.acc_seg: 96.3167  loss_nce: 0.1035
+2026/01/21 15:51:40 - mmengine - INFO - Iter(train) [ 1920/30000]  base_lr: 9.8530e-05 lr: 9.8530e-05  eta: 2:06:48  time: 0.2742  data_time: 0.0211  memory: 15297  loss: 0.1638  decode.loss_ce: 0.0696  decode.acc_seg: 98.3208  loss_nce: 0.0942
+2026/01/21 15:51:42 - mmengine - INFO - Iter(train) [ 1930/30000]  base_lr: 9.8495e-05 lr: 9.8495e-05  eta: 2:06:46  time: 0.2756  data_time: 0.0208  memory: 15298  loss: 0.1618  decode.loss_ce: 0.0686  decode.acc_seg: 96.9409  loss_nce: 0.0932
+2026/01/21 15:51:45 - mmengine - INFO - Iter(train) [ 1940/30000]  base_lr: 9.8460e-05 lr: 9.8460e-05  eta: 2:06:44  time: 0.2751  data_time: 0.0211  memory: 15296  loss: 0.1718  decode.loss_ce: 0.0852  decode.acc_seg: 97.2818  loss_nce: 0.0866
+2026/01/21 15:51:48 - mmengine - INFO - Iter(train) [ 1950/30000]  base_lr: 9.8425e-05 lr: 9.8425e-05  eta: 2:06:42  time: 0.2760  data_time: 0.0212  memory: 15297  loss: 0.1491  decode.loss_ce: 0.0720  decode.acc_seg: 95.5391  loss_nce: 0.0771
+2026/01/21 15:51:51 - mmengine - INFO - Iter(train) [ 1960/30000]  base_lr: 9.8389e-05 lr: 9.8389e-05  eta: 2:06:45  time: 0.3113  data_time: 0.0210  memory: 15297  loss: 0.1541  decode.loss_ce: 0.0764  decode.acc_seg: 98.0582  loss_nce: 0.0777
+2026/01/21 15:51:54 - mmengine - INFO - Iter(train) [ 1970/30000]  base_lr: 9.8354e-05 lr: 9.8354e-05  eta: 2:06:42  time: 0.2727  data_time: 0.0197  memory: 15297  loss: 0.1496  decode.loss_ce: 0.0680  decode.acc_seg: 98.4655  loss_nce: 0.0816
+2026/01/21 15:51:57 - mmengine - INFO - Iter(train) [ 1980/30000]  base_lr: 9.8319e-05 lr: 9.8319e-05  eta: 2:06:40  time: 0.2778  data_time: 0.0216  memory: 15297  loss: 0.1607  decode.loss_ce: 0.0793  decode.acc_seg: 95.6406  loss_nce: 0.0814
+2026/01/21 15:51:59 - mmengine - INFO - Iter(train) [ 1990/30000]  base_lr: 9.8284e-05 lr: 9.8284e-05  eta: 2:06:38  time: 0.2766  data_time: 0.0215  memory: 15297  loss: 0.1547  decode.loss_ce: 0.0784  decode.acc_seg: 97.3327  loss_nce: 0.0763
+2026/01/21 15:52:02 - mmengine - INFO - Exp name: MdaCD_LEVIRCD_20260121_154247
+2026/01/21 15:52:02 - mmengine - INFO - Iter(train) [ 2000/30000]  base_lr: 9.8249e-05 lr: 9.8249e-05  eta: 2:06:37  time: 0.2790  data_time: 0.0220  memory: 15296  loss: 0.1408  decode.loss_ce: 0.0644  decode.acc_seg: 98.1365  loss_nce: 0.0765
+2026/01/21 15:52:03 - mmengine - INFO - Iter(val) [10/64]    eta: 0:00:03  time: 0.0684  data_time: 0.0188  memory: 3250  
+2026/01/21 15:52:03 - mmengine - INFO - Iter(val) [20/64]    eta: 0:00:02  time: 0.0557  data_time: 0.0071  memory: 3250  
+2026/01/21 15:52:04 - mmengine - INFO - Iter(val) [30/64]    eta: 0:00:02  time: 0.0559  data_time: 0.0071  memory: 3250  
+2026/01/21 15:52:04 - mmengine - INFO - Iter(val) [40/64]    eta: 0:00:01  time: 0.0557  data_time: 0.0071  memory: 3250  
+2026/01/21 15:52:05 - mmengine - INFO - Iter(val) [50/64]    eta: 0:00:00  time: 0.0558  data_time: 0.0070  memory: 3250  
+2026/01/21 15:52:06 - mmengine - INFO - Iter(val) [60/64]    eta: 0:00:00  time: 0.0555  data_time: 0.0070  memory: 3250  
+2026/01/21 15:52:06 - mmengine - INFO - per class results:
+2026/01/21 15:52:06 - mmengine - INFO - 
++------------+-------+-------+
+|   Class    |  IoU  |  Acc  |
++------------+-------+-------+
+| background | 98.07 | 99.49 |
+|  building  | 59.93 | 66.93 |
++------------+-------+-------+
+2026/01/21 15:52:06 - mmengine - INFO - Iter(val) [64/64]    aAcc: 98.1200  mIoU: 79.0000  mAcc: 83.2100  data_time: 0.0089  time: 0.0577
+2026/01/21 15:52:09 - mmengine - INFO - Iter(train) [ 2010/30000]  base_lr: 9.8214e-05 lr: 9.8214e-05  eta: 2:06:35  time: 0.2761  data_time: 0.0205  memory: 15296  loss: 0.1451  decode.loss_ce: 0.0648  decode.acc_seg: 97.2684  loss_nce: 0.0803
+2026/01/21 15:52:11 - mmengine - INFO - Iter(train) [ 2020/30000]  base_lr: 9.8179e-05 lr: 9.8179e-05  eta: 2:06:32  time: 0.2737  data_time: 0.0207  memory: 15297  loss: 0.1391  decode.loss_ce: 0.0671  decode.acc_seg: 97.1088  loss_nce: 0.0720
+2026/01/21 15:52:14 - mmengine - INFO - Iter(train) [ 2030/30000]  base_lr: 9.8144e-05 lr: 9.8144e-05  eta: 2:06:30  time: 0.2732  data_time: 0.0204  memory: 15297  loss: 0.1393  decode.loss_ce: 0.0645  decode.acc_seg: 97.9087  loss_nce: 0.0748
+2026/01/21 15:52:17 - mmengine - INFO - Iter(train) [ 2040/30000]  base_lr: 9.8109e-05 lr: 9.8109e-05  eta: 2:06:28  time: 0.2802  data_time: 0.0224  memory: 15297  loss: 0.1337  decode.loss_ce: 0.0648  decode.acc_seg: 96.7186  loss_nce: 0.0689
+2026/01/21 15:52:20 - mmengine - INFO - Iter(train) [ 2050/30000]  base_lr: 9.8074e-05 lr: 9.8074e-05  eta: 2:06:26  time: 0.2768  data_time: 0.0202  memory: 15296  loss: 0.1449  decode.loss_ce: 0.0702  decode.acc_seg: 96.3792  loss_nce: 0.0747
+2026/01/21 15:52:22 - mmengine - INFO - Iter(train) [ 2060/30000]  base_lr: 9.8039e-05 lr: 9.8039e-05  eta: 2:06:24  time: 0.2742  data_time: 0.0204  memory: 15297  loss: 0.1456  decode.loss_ce: 0.0723  decode.acc_seg: 96.1701  loss_nce: 0.0733
+2026/01/21 15:52:25 - mmengine - INFO - Iter(train) [ 2070/30000]  base_lr: 9.8003e-05 lr: 9.8003e-05  eta: 2:06:22  time: 0.2783  data_time: 0.0213  memory: 15298  loss: 0.1327  decode.loss_ce: 0.0594  decode.acc_seg: 97.4129  loss_nce: 0.0733
+2026/01/21 15:52:28 - mmengine - INFO - Iter(train) [ 2080/30000]  base_lr: 9.7968e-05 lr: 9.7968e-05  eta: 2:06:21  time: 0.2808  data_time: 0.0245  memory: 15297  loss: 0.1414  decode.loss_ce: 0.0703  decode.acc_seg: 95.8639  loss_nce: 0.0711
+2026/01/21 15:52:31 - mmengine - INFO - Iter(train) [ 2090/30000]  base_lr: 9.7933e-05 lr: 9.7933e-05  eta: 2:06:19  time: 0.2787  data_time: 0.0223  memory: 15297  loss: 0.1535  decode.loss_ce: 0.0815  decode.acc_seg: 91.6832  loss_nce: 0.0721
+2026/01/21 15:52:33 - mmengine - INFO - Iter(train) [ 2100/30000]  base_lr: 9.7898e-05 lr: 9.7898e-05  eta: 2:06:17  time: 0.2793  data_time: 0.0207  memory: 15297  loss: 0.1388  decode.loss_ce: 0.0642  decode.acc_seg: 98.1466  loss_nce: 0.0746
+2026/01/21 15:52:36 - mmengine - INFO - Iter(train) [ 2110/30000]  base_lr: 9.7863e-05 lr: 9.7863e-05  eta: 2:06:15  time: 0.2783  data_time: 0.0211  memory: 15296  loss: 0.1583  decode.loss_ce: 0.0885  decode.acc_seg: 96.1764  loss_nce: 0.0698
+2026/01/21 15:52:39 - mmengine - INFO - Iter(train) [ 2120/30000]  base_lr: 9.7828e-05 lr: 9.7828e-05  eta: 2:06:14  time: 0.2787  data_time: 0.0233  memory: 15297  loss: 0.1521  decode.loss_ce: 0.0748  decode.acc_seg: 96.6325  loss_nce: 0.0773
+2026/01/21 15:52:42 - mmengine - INFO - Iter(train) [ 2130/30000]  base_lr: 9.7793e-05 lr: 9.7793e-05  eta: 2:06:11  time: 0.2746  data_time: 0.0193  memory: 15297  loss: 0.1642  decode.loss_ce: 0.0839  decode.acc_seg: 97.9299  loss_nce: 0.0803
+2026/01/21 15:52:45 - mmengine - INFO - Iter(train) [ 2140/30000]  base_lr: 9.7758e-05 lr: 9.7758e-05  eta: 2:06:09  time: 0.2761  data_time: 0.0200  memory: 15297  loss: 0.1519  decode.loss_ce: 0.0803  decode.acc_seg: 97.8729  loss_nce: 0.0716
+2026/01/21 15:52:47 - mmengine - INFO - Iter(train) [ 2150/30000]  base_lr: 9.7723e-05 lr: 9.7723e-05  eta: 2:06:07  time: 0.2769  data_time: 0.0210  memory: 15297  loss: 0.1631  decode.loss_ce: 0.0917  decode.acc_seg: 97.4625  loss_nce: 0.0714
+2026/01/21 15:52:50 - mmengine - INFO - Iter(train) [ 2160/30000]  base_lr: 9.7688e-05 lr: 9.7688e-05  eta: 2:06:05  time: 0.2769  data_time: 0.0228  memory: 15297  loss: 0.1452  decode.loss_ce: 0.0685  decode.acc_seg: 98.8356  loss_nce: 0.0767
+2026/01/21 15:52:53 - mmengine - INFO - Iter(train) [ 2170/30000]  base_lr: 9.7653e-05 lr: 9.7653e-05  eta: 2:06:03  time: 0.2757  data_time: 0.0208  memory: 15297  loss: 0.1422  decode.loss_ce: 0.0709  decode.acc_seg: 98.8792  loss_nce: 0.0713
+2026/01/21 15:52:56 - mmengine - INFO - Iter(train) [ 2180/30000]  base_lr: 9.7617e-05 lr: 9.7617e-05  eta: 2:06:01  time: 0.2747  data_time: 0.0199  memory: 15297  loss: 0.1559  decode.loss_ce: 0.0862  decode.acc_seg: 95.1660  loss_nce: 0.0698
+2026/01/21 15:52:58 - mmengine - INFO - Iter(train) [ 2190/30000]  base_lr: 9.7582e-05 lr: 9.7582e-05  eta: 2:05:58  time: 0.2759  data_time: 0.0208  memory: 15298  loss: 0.1475  decode.loss_ce: 0.0760  decode.acc_seg: 98.5432  loss_nce: 0.0715
+2026/01/21 15:53:01 - mmengine - INFO - Iter(train) [ 2200/30000]  base_lr: 9.7547e-05 lr: 9.7547e-05  eta: 2:05:57  time: 0.2811  data_time: 0.0238  memory: 15297  loss: 0.1410  decode.loss_ce: 0.0657  decode.acc_seg: 98.6888  loss_nce: 0.0752
+2026/01/21 15:53:04 - mmengine - INFO - Iter(train) [ 2210/30000]  base_lr: 9.7512e-05 lr: 9.7512e-05  eta: 2:05:54  time: 0.2733  data_time: 0.0181  memory: 15297  loss: 0.1474  decode.loss_ce: 0.0794  decode.acc_seg: 96.1675  loss_nce: 0.0680
+2026/01/21 15:53:07 - mmengine - INFO - Iter(train) [ 2220/30000]  base_lr: 9.7477e-05 lr: 9.7477e-05  eta: 2:05:52  time: 0.2744  data_time: 0.0196  memory: 15297  loss: 0.1364  decode.loss_ce: 0.0694  decode.acc_seg: 96.8671  loss_nce: 0.0670
+2026/01/21 15:53:09 - mmengine - INFO - Iter(train) [ 2230/30000]  base_lr: 9.7442e-05 lr: 9.7442e-05  eta: 2:05:50  time: 0.2747  data_time: 0.0199  memory: 15297  loss: 0.1600  decode.loss_ce: 0.0841  decode.acc_seg: 96.7974  loss_nce: 0.0759
+2026/01/21 15:53:12 - mmengine - INFO - Iter(train) [ 2240/30000]  base_lr: 9.7407e-05 lr: 9.7407e-05  eta: 2:05:48  time: 0.2793  data_time: 0.0232  memory: 15297  loss: 0.1468  decode.loss_ce: 0.0791  decode.acc_seg: 95.4962  loss_nce: 0.0676
+2026/01/21 15:53:15 - mmengine - INFO - Iter(train) [ 2250/30000]  base_lr: 9.7372e-05 lr: 9.7372e-05  eta: 2:05:45  time: 0.2713  data_time: 0.0186  memory: 15297  loss: 0.1509  decode.loss_ce: 0.0829  decode.acc_seg: 96.9265  loss_nce: 0.0679
+2026/01/21 15:53:18 - mmengine - INFO - Iter(train) [ 2260/30000]  base_lr: 9.7337e-05 lr: 9.7337e-05  eta: 2:05:42  time: 0.2730  data_time: 0.0197  memory: 15297  loss: 0.1477  decode.loss_ce: 0.0774  decode.acc_seg: 97.1825  loss_nce: 0.0703
+2026/01/21 15:53:20 - mmengine - INFO - Iter(train) [ 2270/30000]  base_lr: 9.7302e-05 lr: 9.7302e-05  eta: 2:05:40  time: 0.2770  data_time: 0.0203  memory: 15297  loss: 0.1466  decode.loss_ce: 0.0732  decode.acc_seg: 98.7742  loss_nce: 0.0734
+2026/01/21 15:53:23 - mmengine - INFO - Iter(train) [ 2280/30000]  base_lr: 9.7267e-05 lr: 9.7267e-05  eta: 2:05:38  time: 0.2780  data_time: 0.0237  memory: 15297  loss: 0.1542  decode.loss_ce: 0.0787  decode.acc_seg: 97.9907  loss_nce: 0.0755
+2026/01/21 15:53:26 - mmengine - INFO - Iter(train) [ 2290/30000]  base_lr: 9.7231e-05 lr: 9.7231e-05  eta: 2:05:35  time: 0.2701  data_time: 0.0199  memory: 15296  loss: 0.1284  decode.loss_ce: 0.0587  decode.acc_seg: 98.3322  loss_nce: 0.0698
+2026/01/21 15:53:29 - mmengine - INFO - Iter(train) [ 2300/30000]  base_lr: 9.7196e-05 lr: 9.7196e-05  eta: 2:05:33  time: 0.2728  data_time: 0.0192  memory: 15297  loss: 0.1186  decode.loss_ce: 0.0524  decode.acc_seg: 97.0608  loss_nce: 0.0662
+2026/01/21 15:53:31 - mmengine - INFO - Iter(train) [ 2310/30000]  base_lr: 9.7161e-05 lr: 9.7161e-05  eta: 2:05:30  time: 0.2734  data_time: 0.0205  memory: 15296  loss: 0.1573  decode.loss_ce: 0.0880  decode.acc_seg: 93.3804  loss_nce: 0.0693
+2026/01/21 15:53:34 - mmengine - INFO - Iter(train) [ 2320/30000]  base_lr: 9.7126e-05 lr: 9.7126e-05  eta: 2:05:28  time: 0.2783  data_time: 0.0234  memory: 15297  loss: 0.1493  decode.loss_ce: 0.0836  decode.acc_seg: 96.1247  loss_nce: 0.0657
+2026/01/21 15:53:37 - mmengine - INFO - Iter(train) [ 2330/30000]  base_lr: 9.7091e-05 lr: 9.7091e-05  eta: 2:05:26  time: 0.2742  data_time: 0.0190  memory: 15297  loss: 0.1487  decode.loss_ce: 0.0770  decode.acc_seg: 97.7279  loss_nce: 0.0718
+2026/01/21 15:53:40 - mmengine - INFO - Iter(train) [ 2340/30000]  base_lr: 9.7056e-05 lr: 9.7056e-05  eta: 2:05:23  time: 0.2735  data_time: 0.0199  memory: 15297  loss: 0.1435  decode.loss_ce: 0.0720  decode.acc_seg: 96.7999  loss_nce: 0.0715
+2026/01/21 15:53:42 - mmengine - INFO - Iter(train) [ 2350/30000]  base_lr: 9.7021e-05 lr: 9.7021e-05  eta: 2:05:21  time: 0.2732  data_time: 0.0208  memory: 15297  loss: 0.1505  decode.loss_ce: 0.0678  decode.acc_seg: 97.7381  loss_nce: 0.0828
+2026/01/21 15:53:45 - mmengine - INFO - Iter(train) [ 2360/30000]  base_lr: 9.6986e-05 lr: 9.6986e-05  eta: 2:05:19  time: 0.2786  data_time: 0.0244  memory: 15297  loss: 0.1689  decode.loss_ce: 0.0959  decode.acc_seg: 95.8448  loss_nce: 0.0730
+2026/01/21 15:53:48 - mmengine - INFO - Iter(train) [ 2370/30000]  base_lr: 9.6951e-05 lr: 9.6951e-05  eta: 2:05:16  time: 0.2724  data_time: 0.0178  memory: 15297  loss: 0.1395  decode.loss_ce: 0.0678  decode.acc_seg: 97.8012  loss_nce: 0.0717
+2026/01/21 15:53:51 - mmengine - INFO - Iter(train) [ 2380/30000]  base_lr: 9.6916e-05 lr: 9.6916e-05  eta: 2:05:13  time: 0.2737  data_time: 0.0197  memory: 15297  loss: 0.1653  decode.loss_ce: 0.0882  decode.acc_seg: 98.4197  loss_nce: 0.0771
+2026/01/21 15:53:53 - mmengine - INFO - Iter(train) [ 2390/30000]  base_lr: 9.6881e-05 lr: 9.6881e-05  eta: 2:05:11  time: 0.2736  data_time: 0.0207  memory: 15297  loss: 0.1594  decode.loss_ce: 0.0869  decode.acc_seg: 97.5427  loss_nce: 0.0726

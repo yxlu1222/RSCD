@@ -94,6 +94,7 @@ class AugCD(BaseSegmentor):
                  fuse_concat_index=3,
                  text_head=False,
                  tau=0.07,
+                 nce_loss_weight=0.01, 
                  identity_head=None,
                  token_embed_dim=512, text_dim=1024,
                  minus_channel = [256, 512, 1024, 2050],
@@ -132,6 +133,7 @@ class AugCD(BaseSegmentor):
 
         self.text_head = text_head
         self.tau = tau
+        self.nce_loss_weight = nce_loss_weight
 
         if neck is not None:
             self.neck = MODELS.build(neck)
@@ -216,8 +218,8 @@ class AugCD(BaseSegmentor):
         x_cat = [torch.cat((xA[i], xB[i]), dim=1) for i in range(len(xA)-1)]
         x_cat.append([x_g, x_l])
         textA, textB = self.get_cls_text(batch_img_metas, False)
-        text_embeddingsA, x_clipA, fused_embeddingsA = self.after_extract_feat_clip(xA, textA)
-        text_embeddingsB, x_clipB, fused_embeddingsB = self.after_extract_feat_clip(xB, textB)
+        text_embeddingsA, x_clipA, fused_embeddingsA, _, _ = self.after_extract_feat_clip(xA, textA)
+        text_embeddingsB, x_clipB, fused_embeddingsB, _, _ = self.after_extract_feat_clip(xB, textB)
 
         x_orig = [torch.cat([x_clipA[i], x_clipB[i]], dim=1) for i in range(len(x_clipA))]
 
@@ -242,6 +244,59 @@ class AugCD(BaseSegmentor):
                                               self.test_cfg)
 
         return seg_logits
+
+    def calculate_nce_loss(self, score_map, visual_embeddings, text_embeddings, temp=0.07):
+        """
+        Calculate Symmetric InfoNCE Loss to align attention-weighted visual features with text features.
+        
+        Args:
+            score_map: [B, K, H, W] - Unnormalized attention scores (logits)
+            visual_embeddings: [B, C, H, W] - Normalized visual feature map
+            text_embeddings: [B, K, C] - Normalized text features
+            temp: Temperature parameter
+            
+        Returns:
+            loss: scalar tensor
+        """
+        B, K, H, W = score_map.shape
+        C = visual_embeddings.shape[1]
+        
+        # 1. Get Attention Map A (Softmax over spatial dimensions)
+        # flatten spatial dims: [B, K, H*W]
+        # attn_map = F.softmax(score_map.reshape(B, K, -1), dim=-1)
+        # 使用 sigmoid 激活，因为每个物体可能存在也可能不存在，或者多个物体共存
+        # 但为了计算加权平均，使得权重和为1，softmax 也是合理的选择。
+        # 这里按照 weak supervision 的惯例，通常是对空间维 softmax
+        attn_map = F.softmax(score_map.reshape(B, K, H*W), dim=-1) # [B, K, N]
+        
+        # 2. Weighted Global Average Pooling to get v_i
+        # visual: [B, C, N]
+        visual_flat = visual_embeddings.reshape(B, C, H*W)
+        
+        # v_i = sum(A * V)
+        # [B, K, N] x [B, C, N]^T -> [B, K, N] x [B, N, C] -> [B, K, C]
+        # visual_weighted: [B, K, C] - 每个文本类别对应的视觉特征向量
+        visual_weighted = torch.bmm(attn_map, visual_flat.permute(0, 2, 1))
+        
+        # Normalize weighted visual features
+        visual_weighted = F.normalize(visual_weighted, dim=-1, p=2)
+        text_embeddings = F.normalize(text_embeddings, dim=-1, p=2)
+        
+        # 3. Calculate Symmetric InfoNCE Loss (Class-wise Contrast only)
+        # Avoid repelling same class features from different images (Instance Discrimination issue)
+        
+        # logits[b, i, j] means sinilarity between visual_class_i and text_class_j in batch b
+        # [B, K, C] x [B, K, C]^T -> [B, K, K]
+        logits = torch.bmm(visual_weighted, text_embeddings.permute(0, 2, 1)) / temp
+        
+        # Target: visual_class_i matches text_class_i (diagonal)
+        labels = torch.arange(K, device=score_map.device).unsqueeze(0).expand(B, -1) # [B, K]
+        
+        # Flatten to [B*K, K] for CrossEntropy
+        # Task: For each visual embedding, classify which text embedding it belongs to (out of K classes)
+        loss = F.cross_entropy(logits.reshape(B*K, K), labels.reshape(-1))
+        
+        return loss
 
     def _decode_head_forward_train(self, inputs: List[Tensor],
                                    data_samples: SampleList) -> dict:
@@ -379,7 +434,10 @@ class AugCD(BaseSegmentor):
         # torch.Size([20, 2, 8, 8])
         fused_embeddings = torch.einsum('bchw,bkc->bkhw', visual_embeddings, text)
         x_orig[self.fuse_concat_index] = torch.cat([x_orig[self.fuse_concat_index], fused_embeddings], dim=1)
-        return text_embeddings, x_orig, fused_embeddings
+        
+        # Calculate scores map for loss
+        score_map = torch.einsum('bchw,bkc->bkhw', visual_embeddings, text)
+        return text_embeddings, x_orig, fused_embeddings, score_map, visual_embeddings
 
     def get_cls_text(self, img_infos, train=True):
 
@@ -422,14 +480,15 @@ class AugCD(BaseSegmentor):
         x_cat = [torch.cat((xA[i], xB[i]), dim=1) for i in range(len(xA)-1)]
         x_cat.append([x_g, x_l])
         textA, textB = self.get_cls_text(data_samples)
-        text_embeddingsA, x_clipA, fused_embeddingsA = self.after_extract_feat_clip(xA, textA)
-        text_embeddingsB, x_clipB, fused_embeddingsB = self.after_extract_feat_clip(xB, textB)
+        text_embeddingsA, x_clipA, fused_embeddingsA, score_mapA, visual_embeddingsA = self.after_extract_feat_clip(xA, textA)
+        text_embeddingsB, x_clipB, fused_embeddingsB, score_mapB, visual_embeddingsB = self.after_extract_feat_clip(xB, textB)
+        fused_embeddings_diff = fused_embeddingsA - fused_embeddingsB
 
         x_orig = [torch.cat([x_clipA[i], x_clipB[i]], dim=1) for i in range(len(x_clipA))]
 
         x_minus = [self.minus_conv[i](torch.abs(x_clipA[i]-x_clipB[i])) for i in range(len(x_clipA))]
         x_diff = [F.sigmoid(1-torch.cosine_similarity(x_clipA[i], x_clipB[i], dim=1)).unsqueeze(1) for i in range(len(x_clipA))]
-        fused_embeddings_diff = fused_embeddingsA - fused_embeddingsB
+        
 
         if self.with_neck:
             x_orig = list(self.neck(x_orig))
@@ -448,6 +507,11 @@ class AugCD(BaseSegmentor):
 
         loss_decode = self._decode_head_forward_train_with_text(x, fused_embeddings_diff, text_embeddingsA, text_embeddingsB, data_samples)
         losses.update(loss_decode)
+        
+        # InfoNCE Loss for alignment
+        loss_nce = (self.calculate_nce_loss(score_mapA, visual_embeddingsA, text_embeddingsA) + \
+                   self.calculate_nce_loss(score_mapB, visual_embeddingsB, text_embeddingsB)) * self.nce_loss_weight
+        losses.update({'loss_nce': loss_nce})
 
         if self.with_identity_head:
             loss_identity_sm = self._identity_head_forward_train(
@@ -553,8 +617,8 @@ class AugCD(BaseSegmentor):
         textB.append(torch.cat([tokenize(c, context_length=self.context_length) for c in [backB, foreB]]).unsqueeze(0))
         textA, textB = torch.cat(textA, dim=0), torch.cat(textB, dim=0)
 
-        text_embeddingsA, x_clipA, fused_embeddingsA = self.after_extract_feat_clip(xA, textA)
-        text_embeddingsB, x_clipB, fused_embeddingsB = self.after_extract_feat_clip(xB, textB)
+        text_embeddingsA, x_clipA, fused_embeddingsA, score_mapA, visual_embeddingsA = self.after_extract_feat_clip(xA, textA)
+        text_embeddingsB, x_clipB, fused_embeddingsB, score_mapB, visual_embeddingsB = self.after_extract_feat_clip(xB, textB)
         fused_embeddings_diff = fused_embeddingsA - fused_embeddingsB
         x_orig = [torch.cat([x_clipA[i], x_clipB[i]], dim=1) for i in range(len(x_clipA))]
 
@@ -573,6 +637,9 @@ class AugCD(BaseSegmentor):
         x = [torch.cat([x[i]*x_diff[i], x_minus[i], x[i]], dim=1) for i in range(len(x))]
         x = [self.channel_att[i](x[i]) for i in range(len(x))]
         data_samples = [{'image_shape': (256, 256)}]
+        
+        # NOTE: _forward usually returns raw logits and doesn't calculate loss, 
+        # so we don't calculate NCE loss here during inference.
 
         seg_logits = self.decode_head.predict_with_text(x, fused_embeddings_diff, text_embeddingsA, text_embeddingsB, data_samples,
                                               self.test_cfg)
