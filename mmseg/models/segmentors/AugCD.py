@@ -94,7 +94,10 @@ class AugCD(BaseSegmentor):
                  fuse_concat_index=3,
                  text_head=False,
                  tau=0.07,
-                 nce_loss_weight=0.07, 
+                 use_nce_loss=True,
+                 nce_loss_weight=0.01,
+                 use_dense_loss=False, 
+                 dense_loss_weight=0.1,
                  identity_head=None,
                  token_embed_dim=512, text_dim=1024,
                  minus_channel = [256, 512, 1024, 2050],
@@ -133,7 +136,10 @@ class AugCD(BaseSegmentor):
 
         self.text_head = text_head
         self.tau = tau
+        self.use_nce_loss = use_nce_loss
         self.nce_loss_weight = nce_loss_weight
+        self.use_dense_loss = use_dense_loss
+        self.dense_loss_weight = dense_loss_weight
 
         if neck is not None:
             self.neck = MODELS.build(neck)
@@ -218,8 +224,10 @@ class AugCD(BaseSegmentor):
         x_cat = [torch.cat((xA[i], xB[i]), dim=1) for i in range(len(xA)-1)]
         x_cat.append([x_g, x_l])
         textA, textB = self.get_cls_text(batch_img_metas, False)
-        text_embeddingsA, x_clipA, fused_embeddingsA, _, _ = self.after_extract_feat_clip(xA, textA)
-        text_embeddingsB, x_clipB, fused_embeddingsB, _, _ = self.after_extract_feat_clip(xB, textB)
+        
+        # Unpack newly returned raw embeddings (ignored here) and fused ones
+        _, text_emb_fused_A, x_clipA, fused_embeddingsA, _, _ = self.after_extract_feat_clip(xA, textA)
+        _, text_emb_fused_B, x_clipB, fused_embeddingsB, _, _ = self.after_extract_feat_clip(xB, textB)
 
         x_orig = [torch.cat([x_clipA[i], x_clipB[i]], dim=1) for i in range(len(x_clipA))]
 
@@ -233,14 +241,15 @@ class AugCD(BaseSegmentor):
 
         losses = dict()
         if self.text_head:
-            x = [text_embeddingsA,] + x_orig
+            # Use fused embeddings for consistency with training
+            x = [text_emb_fused_A,] + x_orig
         else:
             x = x_orig
 
         x = [torch.cat([x[i]*x_diff[i], x_minus[i], x[i]], dim=1) for i in range(len(x))]
         x = [self.channel_att[i](x[i]) for i in range(len(x))]
 
-        seg_logits = self.decode_head.predict_with_text(x, fused_embeddings_diff, text_embeddingsA, text_embeddingsB, batch_img_metas,
+        seg_logits = self.decode_head.predict_with_text(x, fused_embeddings_diff, text_emb_fused_A, text_emb_fused_B, batch_img_metas,
                                               self.test_cfg)
 
         return seg_logits
@@ -417,15 +426,15 @@ class AugCD(BaseSegmentor):
 
         # (B, K, C)
         contexts_ = torch.cat([self.contexts2] * int(x[0].size()[0]), dim=0)
-        text_embeddings = self.text_encoder(text.to(global_feat.device), contexts_).expand(B, -1, -1)
+        text_embeddings_raw = self.text_encoder(text.to(global_feat.device), contexts_).expand(B, -1, -1)
         # text_embeddings = self.text_encoder(self.texts.to(global_feat.device), self.contexts).expand(B, -1, -1)
         
 
         # update text_embeddings by visual_context!
         # (B, 1, C)
-        text_diff = self.context_decoder(text_embeddings, visual_context)
+        text_diff = self.context_decoder(text_embeddings_raw, visual_context)
         # (B, K, C)
-        text_embeddings = text_embeddings + self.gamma * text_diff
+        text_embeddings = text_embeddings_raw + self.gamma * text_diff
 
         # compute score map and concat
         B, K, C = text_embeddings.shape
@@ -436,8 +445,13 @@ class AugCD(BaseSegmentor):
         x_orig[self.fuse_concat_index] = torch.cat([x_orig[self.fuse_concat_index], fused_embeddings], dim=1)
         
         # Calculate scores map for loss
-        score_map = torch.einsum('bchw,bkc->bkhw', visual_embeddings, text)
-        return text_embeddings, x_orig, fused_embeddings, score_map, visual_embeddings
+        # Use RAW text embeddings for Score Map calculation in Loss (Uncontaminated Alignment)
+        # We want to force the visual features to align with the STATIC, RAW text definitions
+        text_raw_norm = F.normalize(text_embeddings_raw, dim=2, p=2)
+        score_map = torch.einsum('bchw,bkc->bkhw', visual_embeddings, text_raw_norm)
+        
+        # Return BOTH raw (for loss) and fused (for segmentation) embeddings
+        return text_embeddings_raw, text_embeddings, x_orig, fused_embeddings, score_map, visual_embeddings
 
     def get_cls_text(self, img_infos, train=True):
 
@@ -480,8 +494,11 @@ class AugCD(BaseSegmentor):
         x_cat = [torch.cat((xA[i], xB[i]), dim=1) for i in range(len(xA)-1)]
         x_cat.append([x_g, x_l])
         textA, textB = self.get_cls_text(data_samples)
-        text_embeddingsA, x_clipA, fused_embeddingsA, score_mapA, visual_embeddingsA = self.after_extract_feat_clip(xA, textA)
-        text_embeddingsB, x_clipB, fused_embeddingsB, score_mapB, visual_embeddingsB = self.after_extract_feat_clip(xB, textB)
+        
+        # Updated unpacking: text_embeddings -> (text_raw, text_fused)
+        text_emb_raw_A, text_emb_fused_A, x_clipA, fused_embeddingsA, score_mapA, visual_embeddingsA = self.after_extract_feat_clip(xA, textA)
+        text_emb_raw_B, text_emb_fused_B, x_clipB, fused_embeddingsB, score_mapB, visual_embeddingsB = self.after_extract_feat_clip(xB, textB)
+        
         fused_embeddings_diff = fused_embeddingsA - fused_embeddingsB
 
         x_orig = [torch.cat([x_clipA[i], x_clipB[i]], dim=1) for i in range(len(x_clipA))]
@@ -496,7 +513,8 @@ class AugCD(BaseSegmentor):
 
         losses = dict()
         if self.text_head:
-            x = [text_embeddingsA,] + x_orig
+            # Use fused text embeddings for segmentation head features if needed
+            x = [text_emb_fused_A,] + x_orig
         else:
             x = x_orig
 
@@ -505,13 +523,46 @@ class AugCD(BaseSegmentor):
 
         losses = dict()
 
-        loss_decode = self._decode_head_forward_train_with_text(x, fused_embeddings_diff, text_embeddingsA, text_embeddingsB, data_samples)
+        # Use Fused Embeddings for Decoding (Better Segmentation)
+        loss_decode = self._decode_head_forward_train_with_text(x, fused_embeddings_diff, text_emb_fused_A, text_emb_fused_B, data_samples)
         losses.update(loss_decode)
-        
-        # InfoNCE Loss for alignment
-        loss_nce = (self.calculate_nce_loss(score_mapA, visual_embeddingsA, text_embeddingsA) + \
-                   self.calculate_nce_loss(score_mapB, visual_embeddingsB, text_embeddingsB)) * self.nce_loss_weight
-        losses.update({'loss_nce': loss_nce})
+        if self.use_nce_loss:
+            # Use Raw Embeddings for Alignment Loss (Better Representation Learning)
+            loss_nce = (self.calculate_nce_loss(score_mapA, visual_embeddingsA, text_emb_raw_A) + \
+                    self.calculate_nce_loss(score_mapB, visual_embeddingsB, text_emb_raw_B)) * self.nce_loss_weight
+            losses.update({'loss_nce': loss_nce})
+
+        # Dense Auxiliary Consistency Loss
+        # Ensure that unchanged regions have consistent visual-text alignment scores
+        if self.use_dense_loss:
+            try:
+                gt_sem_seg = torch.stack([sample.gt_sem_seg.data for sample in data_samples], dim=0) # [B, 1, H, W]
+                gt_sem_seg = gt_sem_seg.float()
+                
+                # Resize GT to match feature map resolution
+                B_feat, K_feat, H_feat, W_feat = score_mapA.shape
+                gt_down = F.interpolate(gt_sem_seg, size=(H_feat, W_feat), mode='nearest')
+                
+                # Minimize distance between score maps in unchanged regions (gt == 0)
+                # score_map is Cosine Similarity (range -1 to 1)
+                diff_sq = (score_mapA - score_mapB) ** 2
+                # Sum over class dimension, keep spatial
+                dist_map = diff_sq.sum(dim=1, keepdim=True) # [B, 1, H, W]
+                
+                # Mask: only care about unchanged pixels (use strict equality to avoid ignore_index 255 issues)
+                unchanged_mask = (gt_down == 0).float()
+                
+                # Normalize by number of unchanged pixels to avoid scaling issues
+                loss_dense_consist = (dist_map * unchanged_mask).sum() / (unchanged_mask.sum() + 1e-6)
+                
+                # Print for debugging if needed (check magnitude)
+                # print(f'Debug: Raw dense loss: {loss_dense_consist.item()}, Weighted: {loss_dense_consist.item() * self.dense_loss_weight}')
+
+                # Weighting: self.dense_loss_weight (Auxiliary)
+                losses.update({'loss_dense_val': loss_dense_consist * self.dense_loss_weight})
+            except Exception as e:
+                # Fallback if data structure differs
+                print(f"Warning: Could not calculate dense auxiliary loss: {e}")
 
         if self.with_identity_head:
             loss_identity_sm = self._identity_head_forward_train(
@@ -617,8 +668,10 @@ class AugCD(BaseSegmentor):
         textB.append(torch.cat([tokenize(c, context_length=self.context_length) for c in [backB, foreB]]).unsqueeze(0))
         textA, textB = torch.cat(textA, dim=0), torch.cat(textB, dim=0)
 
-        text_embeddingsA, x_clipA, fused_embeddingsA, score_mapA, visual_embeddingsA = self.after_extract_feat_clip(xA, textA)
-        text_embeddingsB, x_clipB, fused_embeddingsB, score_mapB, visual_embeddingsB = self.after_extract_feat_clip(xB, textB)
+        # Unpack updated returns
+        _, text_emb_fused_A, x_clipA, fused_embeddingsA, _, _ = self.after_extract_feat_clip(xA, textA)
+        _, text_emb_fused_B, x_clipB, fused_embeddingsB, _, _ = self.after_extract_feat_clip(xB, textB)
+        
         fused_embeddings_diff = fused_embeddingsA - fused_embeddingsB
         x_orig = [torch.cat([x_clipA[i], x_clipB[i]], dim=1) for i in range(len(x_clipA))]
 
@@ -630,7 +683,8 @@ class AugCD(BaseSegmentor):
             _x_orig = x_orig
 
         if self.text_head:
-            x = [text_embeddingsA,] + x_orig
+            # Use fused embeddings
+            x = [text_emb_fused_A,] + x_orig
         else:
             x = x_orig
 
@@ -641,7 +695,7 @@ class AugCD(BaseSegmentor):
         # NOTE: _forward usually returns raw logits and doesn't calculate loss, 
         # so we don't calculate NCE loss here during inference.
 
-        seg_logits = self.decode_head.predict_with_text(x, fused_embeddings_diff, text_embeddingsA, text_embeddingsB, data_samples,
+        seg_logits = self.decode_head.predict_with_text(x, fused_embeddings_diff, text_emb_fused_A, text_emb_fused_B, data_samples,
                                               self.test_cfg)
         torch.cuda.synchronize()
         end = time.time()

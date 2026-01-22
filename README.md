@@ -140,4 +140,5 @@ python general/clip_inference.py \
 ```
 Loops当中的FP和FN指标进行交换了两次
 loss当中的mask进行修改
+pkill -9 -f "python.*train.py"
 ```
