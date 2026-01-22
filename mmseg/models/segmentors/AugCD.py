@@ -94,7 +94,7 @@ class AugCD(BaseSegmentor):
                  fuse_concat_index=3,
                  text_head=False,
                  tau=0.07,
-                 nce_loss_weight=0.01, 
+                 nce_loss_weight=0.07, 
                  identity_head=None,
                  token_embed_dim=512, text_dim=1024,
                  minus_channel = [256, 512, 1024, 2050],

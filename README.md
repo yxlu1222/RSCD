@@ -1,3 +1,25 @@
+## AugCD 主要方法说明
+
+- `__init__`：模型初始化，组装各个模块（backbone、text_encoder、context_decoder、decode_head等）。
+- `_init_decode_head`：初始化 decode_head（分割头），用于语义分割预测。
+- `_init_auxiliary_head`：初始化辅助分割头（可选，用于深监督）。
+- `_init_identity_head`：初始化身份分割头（可选，用于额外监督）。
+- `extract_feat(inputs)`：提取输入图像的多层特征，调用 backbone（如 CLIPResNetWithAttention）。
+- `encode_decode(inputs, batch_img_metas)`：编码输入图像并解码为分割结果。包括特征提取、文本特征融合、上下文解码、特征融合、分割预测等。
+- `after_extract_feat_clip(x, text)`：视觉特征与文本特征进行上下文融合，得到最终的融合特征。
+- `get_cls_text(img_infos, train=True)`：生成每张图片的文本描述（如类别、变化区域等），用于文本特征编码。
+- `loss(inputs, data_samples)`：计算模型损失，包括分割损失、文本融合损失等。训练时的主入口。
+- `_decode_head_forward_train(inputs, data_samples)`：调用 decode_head 的 loss 方法，计算主分割损失。
+- `_decode_head_forward_train_with_text(x, fuse_diff, textA, textB, data_samples)`：调用 decode_head 的 custom_loss 方法，计算融合文本的分割损失。
+- `_auxiliary_head_forward_train(inputs, data_samples)`：计算辅助分割头的损失（如有）。
+- `_identity_head_forward_train(x, data_samples, loss_id)`：计算身份分割头的损失（如有）。
+- `predict(inputs, data_samples=None)`：推理接口，输入图像，输出分割结果（包括像素类别和分割概率）。
+- `_forward(inputs, data_samples=None)`：网络前向过程，主要用于模型导出、ONNX等场景。
+- `mm_slide_inference(inputs, batch_img_metas)`：多模态滑窗推理，适用于大图分块推理。
+- `slide_inference(inputs, batch_img_metas)`：普通滑窗推理，适用于大图分块推理。
+- `whole_inference(inputs, batch_img_metas)`：整图推理，直接对整张图片进行分割预测。
+- `inference(inputs, batch_img_metas)`：推理主入口，根据配置选择滑窗或整图推理。
+
 ## 使用指南
 
 ### 数据准备

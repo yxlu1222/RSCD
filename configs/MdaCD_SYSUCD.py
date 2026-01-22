@@ -82,7 +82,7 @@ param_scheduler = [
         eta_min=0.0,
         power=1.0,
         begin=1500,
-        end=10000,
+        end=20000,
         by_epoch=False,
     )
 ]
@@ -107,13 +107,13 @@ test_dataloader = dict(
         data_root=data_root,
         metainfo=metainfo,
         ann_file='test.txt'))
-train_cfg = dict(type='IterBasedTrainLoop', max_iters=10000, val_interval=500)
+train_cfg = dict(type='IterBasedTrainLoop', max_iters=20000, val_interval=500)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 default_hooks = dict(
     timer=dict(type='IterTimerHook'),
     logger=dict(type='LoggerHook', interval=10, log_metric_by_epoch=False),
     param_scheduler=dict(type='ParamSchedulerHook'),
-    checkpoint=dict(type='CheckpointHook', by_epoch=False, interval=10000, save_best='mIoU'),
+    checkpoint=dict(type='CheckpointHook', by_epoch=False, interval=20000, save_best='mIoU'),
     sampler_seed=dict(type='DistSamplerSeedHook'),
     visualization=dict(type='SegVisualizationHook'))
