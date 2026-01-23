@@ -443,13 +443,21 @@ class AugCD(BaseSegmentor):
         # torch.Size([20, 2, 8, 8])
         fused_embeddings = torch.einsum('bchw,bkc->bkhw', visual_embeddings, text)
         x_orig[self.fuse_concat_index] = torch.cat([x_orig[self.fuse_concat_index], fused_embeddings], dim=1)
-        
+
         # Calculate scores map for loss
         # Use RAW text embeddings for Score Map calculation in Loss (Uncontaminated Alignment)
         # We want to force the visual features to align with the STATIC, RAW text definitions
         text_raw_norm = F.normalize(text_embeddings_raw, dim=2, p=2)
         score_map = torch.einsum('bchw,bkc->bkhw', visual_embeddings, text_raw_norm)
-        
+
+        # 残差注意力门控（仅对fuse_concat_index层）
+        # 取所有类别的平均响应作为显著性图
+        saliency_map = score_map.mean(dim=1, keepdim=True)  # [B, 1, H, W]
+        attention_gate = torch.sigmoid(saliency_map)        # [B, 1, H, W], 0~1
+        # 残差注意力门控，带系数 alpha
+        alpha = 1e-4
+        x_orig[self.fuse_concat_index] = x_orig[self.fuse_concat_index] * (1 + alpha * attention_gate)
+
         # Return BOTH raw (for loss) and fused (for segmentation) embeddings
         return text_embeddings_raw, text_embeddings, x_orig, fused_embeddings, score_map, visual_embeddings
 
