@@ -24,12 +24,12 @@ data_preprocessor = dict(
         57.375,
     ],
     type='SegDataPreProcessor')
-data_root = '/home/dell/gitrepos/MdaCD/Dataset/SYSUCD'
+data_root = '/home/dell/gitrepos/MdaCD/Dataset/LEVIRCD'
 dataset_type = 'TXTCDDatasetJSON'
 default_hooks = dict(
     checkpoint=dict(
         by_epoch=False,
-        interval=20000,
+        interval=10000,
         save_best='mIoU',
         type='CheckpointHook'),
     logger=dict(interval=10, log_metric_by_epoch=False, type='LoggerHook'),
@@ -44,7 +44,7 @@ env_cfg = dict(
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
 find_unused_parameters = True
 launcher = 'pytorch'
-load_from = '/home/dell/gitrepos/MdaCD/work_dirs/MdaCD_SYSUCD_8/best_mIoU_iter_8000.pth'
+load_from = '/home/dell/gitrepos/MdaCD/work_dirs/MdaCD_LEVIRCD_8/best_mIoU_iter_23000.pth'
 log_level = 'INFO'
 log_processor = dict(by_epoch=False)
 metainfo = dict(
@@ -111,7 +111,7 @@ model = dict(
         ],
         loss_decode=dict(
             loss_weight=1.0, type='CrossEntropyLoss', use_sigmoid=False),
-        norm_cfg=dict(requires_grad=True, type='BN'),
+        norm_cfg=dict(requires_grad=True, type='SyncBN'),
         num_classes=2,
         type='SwinTextDecode'),
     neck=dict(
@@ -137,13 +137,13 @@ model = dict(
     text_head=False,
     train_cfg=dict(),
     type='AugCD')
-norm_cfg = dict(requires_grad=True, type='BN')
+norm_cfg = dict(requires_grad=True, type='SyncBN')
 optim_wrapper = dict(
     optimizer=dict(
         betas=(
             0.9,
             0.999,
-        ), lr=3e-05, type='AdamW', weight_decay=0.01),
+        ), lr=0.0001, type='AdamW', weight_decay=0.01),
     paramwise_cfg=dict(
         custom_keys=dict(
             absolute_pos_embed=dict(decay_mult=0.0),
@@ -158,7 +158,7 @@ param_scheduler = [
     dict(
         begin=1500,
         by_epoch=False,
-        end=20000,
+        end=40000,
         eta_min=0.0,
         power=1.0,
         type='PolyLR'),
@@ -171,7 +171,7 @@ test_dataloader = dict(
         ann_file='test.txt',
         data_prefix=dict(
             img_path='test/A', img_path2='test/B', seg_map_path='test/label'),
-        data_root='/home/dell/gitrepos/MdaCD/Dataset/SYSUCD',
+        data_root='/home/dell/gitrepos/MdaCD/Dataset/LEVIRCD',
         metainfo=dict(
             classes=(
                 'background',
@@ -204,7 +204,8 @@ test_evaluator = dict(
         'mIoU',
     ],
     keep_results=True,
-    output_dir='/home/dell/gitrepos/MdaCD/work_dirs/MdaCD_SYSUCD_8/test_result',
+    output_dir=
+    '/home/dell/gitrepos/MdaCD/work_dirs/MdaCD_LEVIRCD_8/test_result',
     type='IoUMetric')
 test_pipeline = [
     dict(type='LoadMultipleRSImageFromFile'),
@@ -212,7 +213,7 @@ test_pipeline = [
     dict(type='ConcatCDInput'),
     dict(type='PackCDInputs'),
 ]
-train_cfg = dict(max_iters=20000, type='IterBasedTrainLoop', val_interval=500)
+train_cfg = dict(max_iters=40000, type='IterBasedTrainLoop', val_interval=1000)
 train_dataloader = dict(
     batch_size=20,
     dataset=dict(
@@ -221,7 +222,7 @@ train_dataloader = dict(
             img_path='train/A',
             img_path2='train/B',
             seg_map_path='train/label'),
-        data_root='/home/dell/gitrepos/MdaCD/Dataset/SYSUCD',
+        data_root='/home/dell/gitrepos/MdaCD/Dataset/LEVIRCD',
         metainfo=dict(
             classes=(
                 'background',
@@ -321,7 +322,7 @@ val_dataloader = dict(
         ann_file='val.txt',
         data_prefix=dict(
             img_path='test/A', img_path2='test/B', seg_map_path='test/label'),
-        data_root='/home/dell/gitrepos/MdaCD/Dataset/SYSUCD',
+        data_root='/home/dell/gitrepos/MdaCD/Dataset/LEVIRCD',
         metainfo=dict(
             classes=(
                 'background',
@@ -362,4 +363,4 @@ visualizer = dict(
     vis_backends=[
         dict(type='LocalVisBackend'),
     ])
-work_dir = './work_dirs/MdaCD_SYSUCD'
+work_dir = './work_dirs/MdaCD_LEVIRCD'

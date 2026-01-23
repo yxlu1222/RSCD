@@ -44,7 +44,7 @@ env_cfg = dict(
     mp_cfg=dict(mp_start_method='fork', opencv_num_threads=0))
 find_unused_parameters = True
 launcher = 'pytorch'
-load_from = '/home/dell/gitrepos/MdaCD/work_dirs/MdaCD_SYSUCD_8/best_mIoU_iter_8000.pth'
+load_from = None
 log_level = 'INFO'
 log_processor = dict(by_epoch=False)
 metainfo = dict(
@@ -202,10 +202,7 @@ test_dataloader = dict(
 test_evaluator = dict(
     iou_metrics=[
         'mIoU',
-    ],
-    keep_results=True,
-    output_dir='/home/dell/gitrepos/MdaCD/work_dirs/MdaCD_SYSUCD_8/test_result',
-    type='IoUMetric')
+    ], type='IoUMetric')
 test_pipeline = [
     dict(type='LoadMultipleRSImageFromFile'),
     dict(type='LoadAnnotations'),
@@ -362,4 +359,4 @@ visualizer = dict(
     vis_backends=[
         dict(type='LocalVisBackend'),
     ])
-work_dir = './work_dirs/MdaCD_SYSUCD'
+work_dir = '/home/dell/gitrepos/MdaCD/work_dirs/MdaCD_SYSUCD_8'
